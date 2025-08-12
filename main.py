@@ -12,7 +12,7 @@ mbti_data = {
         "jobs": ["마케터", "광고 기획자", "작가", "방송인", "창업가"],
         "image": "https://images.unsplash.com/photo-1517841905240-472988babdf9"
     },
-    # ... 나머지 MBTI도 동일하게 추가
+    # ... 나머지 MBTI 데이터도 추가
 }
 
 # 페이지 설정
@@ -32,6 +32,7 @@ rainbow_css = """
 .rainbow-text {
   font-size: 28px;
   font-weight: bold;
+  text-align: center;
   background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -43,7 +44,7 @@ rainbow_css = """
 if st.button("추천 받기"):
     data = mbti_data.get(mbti)
     if data:
-        # HTML + CSS 적용
+        # CSS 적용
         st.markdown(rainbow_css, unsafe_allow_html=True)
         st.markdown(f"<div class='rainbow-text'>{mbti} - {data['description']}</div>", unsafe_allow_html=True)
 
@@ -54,5 +55,9 @@ if st.button("추천 받기"):
         st.markdown("**💼 추천 직업**")
         for job in data["jobs"]:
             st.write(f"- {job}")
+
+        # 🎈 풍선 & 🎉 폭죽 효과
+        st.balloons()  # 풍선
+        st.snow()      # 폭죽(눈 효과 비슷)
     else:
         st.warning("아직 데이터가 준비되지 않았어요!")
