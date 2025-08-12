@@ -12,7 +12,11 @@ mbti_data = {
         "jobs": ["마케터", "광고 기획자", "작가", "방송인", "창업가"],
         "image": "https://images.unsplash.com/photo-1517841905240-472988babdf9"
     },
-    # ... 나머지 MBTI 데이터도 추가
+    "ESTP": {
+        "description": "사업가형 - 활동적이고 즉흥적이며 상황 대처 능력이 뛰어납니다.",
+        "jobs": ["영업 전문가", "기업가", "스포츠 코치", "이벤트 기획자", "경찰관"],
+        "image": "https://images.unsplash.com/photo-1504386106331-3e4e71712b38"
+    }
 }
 
 # 페이지 설정
@@ -40,24 +44,118 @@ rainbow_css = """
 </style>
 """
 
+# 하트 애니메이션
+hearts_animation = """
+<script>
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+  heart.innerText = "❤️";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 5000);
+}
+setInterval(createHeart, 300);
+</script>
+<style>
+.heart {
+  position: fixed;
+  top: -2vh;
+  font-size: 24px;
+  animation: fall linear forwards;
+  z-index: 9999;
+}
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+</style>
+"""
+
+# 폭죽 애니메이션
+fireworks_animation = """
+<canvas id="fireworksCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+<script>
+const canvas = document.getElementById('fireworksCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function random(min, max) { return Math.random() * (max - min) + min; }
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x; this.y = y;
+        this.color = color;
+        this.radius = 2;
+        this.alpha = 1;
+        this.velocity = {
+            x: random(-5, 5),
+            y: random(-5, 5)
+        };
+    }
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+    }
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.alpha -= 0.02;
+    }
+}
+
+let particles = [];
+
+function createFirework(x, y) {
+    const colors = ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#ff00ff', '#ffffff'];
+    for (let i = 0; i < 50; i++) {
+        particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+    }
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(i, 1);
+    });
+}
+
+animate();
+
+canvas.addEventListener('click', (e) => createFirework(e.clientX, e.clientY));
+for (let i = 0; i < 5; i++) {
+    setTimeout(() => createFirework(random(100, canvas.width-100), random(100, canvas.height-100)), i * 500);
+}
+</script>
+"""
+
 # 추천 버튼
 if st.button("추천 받기"):
     data = mbti_data.get(mbti)
     if data:
-        # CSS 적용
         st.markdown(rainbow_css, unsafe_allow_html=True)
         st.markdown(f"<div class='rainbow-text'>{mbti} - {data['description']}</div>", unsafe_allow_html=True)
 
-        # 이미지
         st.image(data["image"], use_column_width=True)
 
-        # 직업 리스트
         st.markdown("**💼 추천 직업**")
         for job in data["jobs"]:
             st.write(f"- {job}")
 
-        # 🎈 풍선 & 🎉 폭죽 효과
         st.balloons()  # 풍선
-        st.snow()      # 폭죽(눈 효과 비슷)
+        st.markdown(hearts_animation, unsafe_allow_html=True)  # 하트
+        st.markdown(fireworks_animation, unsafe_allow_html=True)  # 폭죽
     else:
         st.warning("아직 데이터가 준비되지 않았어요!")
