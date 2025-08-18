@@ -1,57 +1,65 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="메이크업 클릭 게임", layout="centered")
+st.set_page_config(page_title="단어 궁합 앱 💖", layout="centered")
 
-st.title("💄 메이크업 클릭 게임 💄")
-st.write("각 메이크업 아이템 버튼을 클릭해서 점수를 모아보세요!")
+st.title("💖 좋아하는 단어 궁합 앱 💖")
+st.write("각자 좋아하는 단어를 입력하면 궁합 점수를 확인해보세요!")
 
-# 세션 스테이트 초기화
-if 'lipstick_score' not in st.session_state:
-    st.session_state.lipstick_score = 0
-if 'blusher_score' not in st.session_state:
-    st.session_state.blusher_score = 0
-if 'eyeshadow_score' not in st.session_state:
-    st.session_state.eyeshadow_score = 0
+# 캐릭터 이미지 URL
+kitty_url = "https://upload.wikimedia.org/wikipedia/en/0/0b/Hello_Kitty.svg"
+mymelody_url = "https://upload.wikimedia.org/wikipedia/en/f/f1/My_Melody.svg"
+kuromi_url = "https://upload.wikimedia.org/wikipedia/en/0/0c/Kuromi.svg"
 
-st.markdown("---")
+st.image([kitty_url, mymelody_url, kuromi_url], width=100, caption=["헬로키티", "마이멜로디", "쿠로미"])
 
-# 립스틱 섹션
-st.subheader("💋 립스틱")
-st.markdown('<div style="background-color:#ffccd5; padding:10px; border-radius:10px;">💖 화사한 핑크 립!</div>', unsafe_allow_html=True)
-if st.button("립스틱 클릭!"):
-    gained = random.randint(1,5)
-    st.session_state.lipstick_score += gained
-    st.success(f"립스틱이 {gained}점 주었어요! 🎉")
-st.write(f"현재 점수: {st.session_state.lipstick_score}")
+# 사용자 입력
+word1 = st.text_input("첫 번째 사람의 좋아하는 단어")
+word2 = st.text_input("두 번째 사람의 좋아하는 단어")
 
-st.markdown("---")
+if st.button("궁합 보기"):
+    if word1 and word2:
+        # 점수 계산
+        length_score = max(0, 10 - abs(len(word1) - len(word2)))
+        common_letters = len(set(word1) & set(word2))
+        random_score = random.randint(0, 10)
+        total_score = length_score + common_letters + random_score
+        total_score = min(total_score, 30)
 
-# 블러셔 섹션
-st.subheader("🌸 블러셔")
-st.markdown('<div style="background-color:#ffe4e1; padding:10px; border-radius:10px;">💗 사랑스러운 치크!</div>', unsafe_allow_html=True)
-if st.button("블러셔 클릭!"):
-    gained = random.randint(2,6)
-    st.session_state.blusher_score += gained
-    st.success(f"블러셔가 {gained}점 주었어요! 🎉")
-st.write(f"현재 점수: {st.session_state.blusher_score}")
+        # 점수별 효과
+        if total_score > 25:
+            st.balloons()  # 풍선/하트 폭죽
+            st.markdown('<h3 style="color:#ff1493">🎉 완전 찰떡 궁합! 🎉</h3>', unsafe_allow_html=True)
+            st.write("👏 박수와 함께 축하해요! 너무 잘 맞아요! 😍")
+        elif total_score > 18:
+            st.markdown('<h3 style="color:#ff69b4">💕 서로 잘 맞는 편이에요! 💕</h3>', unsafe_allow_html=True)
+            st.write("🎈 귀여운 하트와 풍선이 터졌어요! 😊")
+        else:
+            st.markdown('<h3 style="color:#1e90ff">☔ 조금 아쉬운 궁합이에요 ☔</h3>', unsafe_allow_html=True)
+            st.write("💧 비가 내리는 분위기지만, 노력하면 좋아질 수 있어요! 😉")
+            # 비 내리는 효과: CSS 애니메이션으로 간단히 표현
+            st.markdown(
+                """
+                <style>
+                @keyframes rain {
+                    0% {top: -10px;}
+                    100% {top: 100%;}
+                }
+                .drop {
+                    position: absolute;
+                    width: 2px;
+                    height: 10px;
+                    background: #1e90ff;
+                    animation: rain 1s linear infinite;
+                }
+                </style>
+                <div class="drop"></div>
+                <div class="drop" style="left: 30px; animation-delay: 0.3s;"></div>
+                <div class="drop" style="left: 60px; animation-delay: 0.6s;"></div>
+                """, unsafe_allow_html=True
+            )
 
-st.markdown("---")
+        st.markdown(f"<p style='font-size:20px'>💌 {word1} 💕 {word2} 점수: {total_score}/30</p>", unsafe_allow_html=True)
+    else:
+        st.warning("두 사람의 단어를 모두 입력해주세요! 📝")
 
-# 아이섀도우 섹션
-st.subheader("✨ 아이섀도우")
-st.markdown('<div style="background-color:#d8bfd8; padding:10px; border-radius:10px;">💜 반짝이는 아이!</div>', unsafe_allow_html=True)
-if st.button("아이섀도우 클릭!"):
-    gained = random.randint(1,7)
-    st.session_state.eyeshadow_score += gained
-    st.success(f"아이섀도우가 {gained}점 주었어요! 🎉")
-st.write(f"현재 점수: {st.session_state.eyeshadow_score}")
-
-st.markdown("---")
-
-# 게임 초기화
-if st.button("게임 초기화"):
-    st.session_state.lipstick_score = 0
-    st.session_state.blusher_score = 0
-    st.session_state.eyeshadow_score = 0
-    st.info("모든 점수가 초기화되었어요! 💖")
