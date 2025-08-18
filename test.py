@@ -24,7 +24,7 @@ if st.button("궁합 보기"):
 
         # 점수별 효과
         if total_score > 80:
-            st.balloons()  # 폭죽/풍선
+            st.balloons()  # 폭죽/하트
             st.markdown('<h3 style="color:#ff1493">🎉 완전 찰떡 궁합! 🎉</h3>', unsafe_allow_html=True)
             st.write("👏 박수와 함께 축하해요! 너무 잘 맞아요! 😻🐶")
         elif total_score > 50:
@@ -33,7 +33,7 @@ if st.button("궁합 보기"):
         else:
             st.markdown('<h3 style="color:#1e90ff">☔ 조금 아쉬운 궁합이에요 ☔</h3>', unsafe_allow_html=True)
             st.write("💧 비가 내리는 분위기지만, 노력하면 좋아질 수 있어요! 😿🐶")
-            # 간단 비 애니메이션
+            # 비 애니메이션
             st.markdown(
                 """
                 <style>
@@ -52,6 +52,7 @@ if st.button("궁합 보기"):
                 <div class="drop"></div>
                 <div class="drop" style="left: 30px; animation-delay: 0.3s;"></div>
                 <div class="drop" style="left: 60px; animation-delay: 0.6s;"></div>
+                <div class="drop" style="left: 90px; animation-delay: 0.9s;"></div>
                 """, unsafe_allow_html=True
             )
 
