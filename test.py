@@ -1,103 +1,57 @@
-import pygame
+import streamlit as st
 import random
 
-pygame.init()
-screen = pygame.display.set_mode((400, 600))
-pygame.display.set_caption("🎀 헬로키티 미니게임 🎀")
-clock = pygame.time.Clock()
+st.set_page_config(page_title="헬로키티 미니 게임", layout="centered")
 
-# --- 캐릭터별 리소스 로드 ---
-characters = {
-    "헬로키티 🎀": {
-        "char": pygame.transform.scale(pygame.image.load("hello.png"), (60, 60)),
-        "bg": pygame.transform.scale(pygame.image.load("bg_hello.png"), (400, 600)),
-        "ribbon": pygame.transform.scale(pygame.image.load("ribbon_hello.png"), (40, 40))
-    },
-    "마이멜로디 🐰": {
-        "char": pygame.transform.scale(pygame.image.load("melody.png"), (60, 60)),
-        "bg": pygame.transform.scale(pygame.image.load("bg_melody.png"), (400, 600)),
-        "ribbon": pygame.transform.scale(pygame.image.load("ribbon_melody.png"), (40, 40))
-    },
-    "쿠로미 🖤": {
-        "char": pygame.transform.scale(pygame.image.load("kuromi.png"), (60, 60)),
-        "bg": pygame.transform.scale(pygame.image.load("bg_kuromi.png"), (400, 600)),
-        "ribbon": pygame.transform.scale(pygame.image.load("ribbon_kuromi.png"), (40, 40))
-    }
-}
+st.title("🎀 캐릭터 클릭 게임 🎀")
+st.write("각 캐릭터의 버튼을 클릭해서 점수를 모아보세요!")
 
-# --- 캐릭터 선택 화면 ---
-font = pygame.font.SysFont(None, 40)
-selected = None
-running = True
-while running and selected is None:
-    screen.fill((255, 255, 255))
-    title = font.render("캐릭터를 선택하세요!", True, (0, 0, 0))
-    screen.blit(title, (80, 100))
+# 세션 스테이트 초기화
+if 'kitty_score' not in st.session_state:
+    st.session_state.kitty_score = 0
+if 'mymelody_score' not in st.session_state:
+    st.session_state.mymelody_score = 0
+if 'kuromi_score' not in st.session_state:
+    st.session_state.kuromi_score = 0
 
-    y = 200
-    for idx, name in enumerate(characters.keys()):
-        text = font.render(name, True, (0, 0, 0))
-        rect = text.get_rect(center=(200, y))
-        screen.blit(text, rect)
-        if pygame.mouse.get_pressed()[0]:
-            if rect.collidepoint(pygame.mouse.get_pos()):
-                selected = name
-        y += 80
+st.markdown("---")
 
-    pygame.display.flip()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    clock.tick(30)
+# 헬로키티 섹션
+st.subheader("😺 헬로키티")
+st.markdown('<div style="background-color:#ffe4e1; padding:10px; border-radius:10px;">🎀 귀여운 핑크 리본!</div>', unsafe_allow_html=True)
+if st.button("헬로키티 클릭!"):
+    gained = random.randint(1,5)
+    st.session_state.kitty_score += gained
+    st.success(f"헬로키티가 {gained}점 주었어요! 🎉")
+st.write(f"현재 점수: {st.session_state.kitty_score}")
 
-if not running:
-    pygame.quit()
-    exit()
+st.markdown("---")
 
-# --- 선택된 캐릭터 리소스 ---
-char_img = characters[selected]["char"]
-bg_img = characters[selected]["bg"]
-ribbon_img = characters[selected]["ribbon"]
-player = pygame.Rect(180, 500, 60, 60)
+# 마이멜로디 섹션
+st.subheader("🐰 마이멜로디")
+st.markdown('<div style="background-color:#fff0f5; padding:10px; border-radius:10px;">💖 사랑스러운 리본!</div>', unsafe_allow_html=True)
+if st.button("마이멜로디 클릭!"):
+    gained = random.randint(2,6)
+    st.session_state.mymelody_score += gained
+    st.success(f"마이멜로디가 {gained}점 주었어요! 🎉")
+st.write(f"현재 점수: {st.session_state.mymelody_score}")
 
-# --- 리본 생성 ---
-ribbons = [pygame.Rect(random.randint(0, 360), random.randint(-600, 0), 40, 40) for _ in range(5)]
+st.markdown("---")
 
-score = 0
-while running:
-    # 배경
-    screen.blit(bg_img, (0, 0))
+# 쿠로미 섹션
+st.subheader("😈 쿠로미")
+st.markdown('<div style="background-color:#e6e6fa; padding:10px; border-radius:10px;">🖤 개성있는 검은 리본!</div>', unsafe_allow_html=True)
+if st.button("쿠로미 클릭!"):
+    gained = random.randint(1,7)
+    st.session_state.kuromi_score += gained
+    st.success(f"쿠로미가 {gained}점 주었어요! 🎉")
+st.write(f"현재 점수: {st.session_state.kuromi_score}")
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+st.markdown("---")
 
-    # 이동
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and player.left > 0:
-        player.move_ip(-5, 0)
-    if keys[pygame.K_RIGHT] and player.right < 400:
-        player.move_ip(5, 0)
-
-    # 리본 이동
-    for r in ribbons:
-        r.move_ip(0, 5)
-        if r.top > 600:
-            r.topleft = (random.randint(0, 360), -30)
-        if player.colliderect(r):
-            score += 1
-            r.topleft = (random.randint(0, 360), -30)
-        screen.blit(ribbon_img, r)
-
-    # 캐릭터
-    screen.blit(char_img, player)
-
-    # 점수
-    score_text = font.render(f"Score: {score}", True, (0, 0, 0))
-    screen.blit(score_text, (10, 10))
-
-    pygame.display.flip()
-    clock.tick(30)
-
-pygame.quit()
-
+# 게임 초기화
+if st.button("게임 초기화"):
+    st.session_state.kitty_score = 0
+    st.session_state.mymelody_score = 0
+    st.session_state.kuromi_score = 0
+    st.info("모든 점수가 초기화되었어요! 🐾")
