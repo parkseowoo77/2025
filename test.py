@@ -3,7 +3,7 @@ import random
 
 st.set_page_config(page_title="단어 궁합 앱 🐱🐶", layout="centered")
 
-st.title("🐱🐶 좋아하는 단어 궁합 앱 🐱🐶")
+st.title("🐱🐶 좋아하는 단어 궁합 앱")
 st.write("각자 좋아하는 단어를 입력하면 궁합 점수를 확인해보세요!")
 
 # 사용자 입력
@@ -12,10 +12,10 @@ word2 = st.text_input("두 번째 사람의 좋아하는 단어")
 
 if st.button("궁합 보기"):
     if word1 and word2:
-        # 고양이와 강아지 이모지 표시
+        # 캐릭터 이모지: 고양이 1 + 강아지 1
         st.markdown(f"🐱 {word1}  💕  {word2} 🐶", unsafe_allow_html=True)
 
-        # 점수 계산: 0~100 범위
+        # 점수 계산: 0~100
         length_score = max(0, 20 - abs(len(word1) - len(word2)))  # 최대 20
         common_letters = len(set(word1) & set(word2)) * 5          # 겹치는 글자 1개당 5점
         random_score = random.randint(0, 60)                      # 랜덤 요소 최대 60
@@ -24,7 +24,7 @@ if st.button("궁합 보기"):
 
         # 점수별 효과
         if total_score > 80:
-            st.balloons()  # 풍선/하트 폭죽
+            st.balloons()  # 폭죽/풍선
             st.markdown('<h3 style="color:#ff1493">🎉 완전 찰떡 궁합! 🎉</h3>', unsafe_allow_html=True)
             st.write("👏 박수와 함께 축하해요! 너무 잘 맞아요! 😻🐶")
         elif total_score > 50:
