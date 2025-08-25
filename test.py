@@ -4,37 +4,9 @@ import { motion } from "framer-motion";
 /**
  * Kitty Birthday Fortune – 생일(date)만 입력하면 운세 표시
  * - Input: 생일 (YYYY-MM-DD)
- * - Output: 오늘의 운세 + 행운의 색 + 행운의 행동 (헬로키티 이미지 지원)
- * - FX: 상시 반짝임, 결과 표시 시 하트 폭죽
- * - 외부 아이콘/라이브러리 불필요 (framer-motion만 사용)
- * - /public/kitty.png 넣으면 실사 이미지 사용, 없으면 SVG 대체
+ * - Output: 오늘의 운세 + 행운의 색 + 행운의 행동
+ * - FX: 상시 반짝임, 결과 표시 시 하트 폭죽 + 축하 이모지 🎂🎉🐱🐶
  */
-
-// ----------------------
-// Kitty fallback SVG (IP-safe)
-// ----------------------
-const KittySVG = ({ size = 128 }) => (
-  <svg width={size} height={(size * 3) / 4} viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="ribbonGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#fda4af" />
-        <stop offset="100%" stopColor="#fb7185" />
-      </linearGradient>
-    </defs>
-    <ellipse cx="60" cy="45" rx="45" ry="35" fill="white" stroke="#e11d48" strokeWidth="4"/>
-    <circle cx="42" cy="42" r="5" fill="#e11d48"/>
-    <circle cx="78" cy="42" r="5" fill="#e11d48"/>
-    <ellipse cx="60" cy="54" rx="6" ry="4" fill="#fbbf24" stroke="#e11d48" strokeWidth="2"/>
-    <path d="M12 40 H34 M12 50 H34 M86 40 H108 M86 50 H108" stroke="#e11d48" strokeWidth="3" strokeLinecap="round"/>
-    <path d="M30 24 L42 4 L52 24" fill="white" stroke="#e11d48" strokeWidth="4"/>
-    <path d="M68 24 L78 4 L90 24" fill="white" stroke="#e11d48" strokeWidth="4"/>
-    <g transform="translate(85,14)">
-      <circle cx="0" cy="0" r="9" fill="#be123c"/>
-      <path d="M-26 -10 C -8 -20, -8 20, -26 10 Z" fill="url(#ribbonGrad)"/>
-      <path d="M 26 -10 C 8 -20, 8 20, 26 10 Z" fill="url(#ribbonGrad)"/>
-    </g>
-  </svg>
-);
 
 // ----------------------
 // Fortune templates (12가지 스타일)
@@ -54,15 +26,10 @@ const TEMPLATES = [
   { text: "감성이 충만. 음악과 함께 영감이 와요.", color: "연보라", action: "좋아하는 음악 듣기" },
 ];
 
-// ----------------------
-// Utils
-// ----------------------
 function getTemplateByBirthday(dateStr) {
-  // dateStr: YYYY-MM-DD
   try {
     const [y, m, d] = dateStr.split("-").map((n) => parseInt(n, 10));
     if (!y || !m || !d) return null;
-    // 간단한 해시: 월*31 + 일 → 0..11
     const idx = ((m * 31 + d) % TEMPLATES.length + TEMPLATES.length) % TEMPLATES.length;
     return TEMPLATES[idx];
   } catch {
@@ -121,7 +88,6 @@ export default function KittyBirthdayFortune() {
   const [birthday, setBirthday] = useState("");
   const [result, setResult] = useState(null);
   const [showBurst, setShowBurst] = useState([]);
-  const [imgError, setImgError] = useState(false);
   const { w, h } = useViewport();
   const sparkles = useSparkles(30);
 
@@ -136,17 +102,14 @@ export default function KittyBirthdayFortune() {
     const tpl = getTemplateByBirthday(birthday);
     if (!tpl) return;
     setResult(tpl);
-    // 하트 폭죽 중앙 기준
     const cx = (w || 360) / 2;
     const cy = 240;
     setShowBurst(makeHeartsBurst(cx, cy));
-    // 잠시 후 폭죽 숨김
     setTimeout(() => setShowBurst([]), 1500);
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-pink-100 to-rose-200 relative overflow-hidden p-6">
-      {/* 배경 반짝임 */}
       {sparkles.map((f) => (
         <motion.div
           key={f.id}
@@ -160,29 +123,9 @@ export default function KittyBirthdayFortune() {
         </motion.div>
       ))}
 
-      {/* 상단 이미지 */}
-      <div className="mb-4">
-        {imgError ? (
-          <div className="text-rose-600">
-            <KittySVG size={120} />
-          </div>
-        ) : (
-          <motion.img
-            src="/kitty.png"
-            alt="Hello Kitty"
-            className="w-28 h-28 object-contain drop-shadow-xl"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1, rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 1.1 }}
-            onError={() => setImgError(true)}
-          />
-        )}
-      </div>
-
       <div className="text-center mb-2 text-sm text-rose-600/80">{today}</div>
-      <h1 className="text-3xl font-extrabold text-rose-700 tracking-tight mb-3">생일 운세</h1>
+      <h1 className="text-3xl font-extrabold text-rose-700 tracking-tight mb-3">🎂🐱🐶 생일 운세 🎉</h1>
 
-      {/* 생일 입력 */}
       <div className="flex items-center gap-2 mb-4">
         <input
           type="date"
@@ -198,7 +141,6 @@ export default function KittyBirthdayFortune() {
         </button>
       </div>
 
-      {/* 결과 카드 */}
       {result && (
         <motion.div
           className="mt-2 p-4 rounded-2xl bg-white/85 shadow-lg text-center text-rose-700 text-lg max-w-xs space-y-2"
@@ -208,10 +150,10 @@ export default function KittyBirthdayFortune() {
           <div>💫 {result.text}</div>
           <div>🎨 행운의 색: <span className="font-semibold">{result.color}</span></div>
           <div>✨ 행운의 행동: <span className="font-semibold">{result.action}</span></div>
+          <div className="mt-2 text-2xl">🎉🐱🐶🎂</div>
         </motion.div>
       )}
 
-      {/* 하트 폭죽 */}
       {showBurst.map((h, i) => (
         <motion.div
           key={h.id}
