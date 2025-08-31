@@ -53,8 +53,11 @@ def calc_score(word1, word2):
         return sum([2 for _ in word])  # 단순화
     diff = abs(count_strokes(word1) - count_strokes(word2))
     score = max(0, 100 - diff * 5)
-    if last_score == score:
-        score = (score + random.randint(1,10)) % 101
+
+    # 이전 점수와 너무 비슷하면 조정
+    while last_score is not None and abs(score - last_score) <= 5:
+        score = max(0, min(100, score + random.randint(-10,10)))
+
     last_score = score
     return score
 
@@ -93,7 +96,6 @@ def generate_long_funny_reason(score, w1, w2):
 심지어 지나가는 사람들도 '저거 뭐야?' 하며 쳐다보죠.
 결국 이렇게 낮은 점수가 나온 이유는 서로 너무 조심스럽고 수줍어해서랍니다!
 """
-
     elif score <= 70:
         return f"""
 '{w1}': '이 장난감 내가 먼저 잡았다!' 😂
@@ -102,7 +104,6 @@ def generate_long_funny_reason(score, w1, w2):
 때때로 서로 장난이 과열되어 뒤엉키기도 하고, 주변 사람들이 '두 사람 진짜 장난꾸러기네!'라고 감탄해요.
 이런 귀엽고 웃긴 상황 때문에 중간 점수가 나왔네요!
 """
-
     elif score <= 99:
         return f"""
 '{w1}': '너 오늘 왜 이렇게 귀여워?' 💖
@@ -112,7 +113,6 @@ def generate_long_funny_reason(score, w1, w2):
 주변 사람들도 자연스럽게 케미를 느끼며 흐뭇하게 바라봅니다.
 높은 점수가 나온 이유는 서로에게 즐거움을 주고받는 긍정적 에너지가 넘치기 때문입니다!
 """
-
     else:
         return f"""
 '{w1}': '드디어 우리가 만났구나! 💍'
@@ -153,12 +153,4 @@ if st.button("단어 초기화 🔄"):
 
 # 점수 공식 & 주의사항
 st.markdown("""
-<hr style='border:2px dashed white;'/>
-
-<div style='text-align:center; color:white; font-size:20px; margin-top:20px;'>
-<b>💡 점수 계산 공식:</b> <br>
-점수 = 100 - |(단어1 획수 - 단어2 획수) × 5| <br>
-※ 점수는 0~100 사이로 제한됩니다.<br><br>
-<b>⚠️ 주의사항:</b> 단순 재미용입니다. 과몰입 금지! 😆
-</div>
-""", unsafe_allow_html=True)
+<hr style='border
