@@ -55,4 +55,110 @@ def calc_score(word1, word2):
     score = max(0, 100 - diff * 5)
     if last_score == score:
         score = (score + random.randint(1,10)) % 101
-    last_sco_
+    last_score = score
+    return score
+
+# 점수별 효과
+def generate_effect_list(score):
+    if score <= 20: return ["☔","🌧️","💧"]
+    elif score <= 40: return ["💦","💧"]
+    elif score <= 60: return ["💖","✨"]
+    elif score <= 80: return ["🌈","💖","🎉"]
+    elif score <= 99: return ["💖","🎆","🎇","✨"]
+    else: return ["💍"]
+
+def show_explosion(score, count=50):
+    effects_html = ""
+    effects = generate_effect_list(score)
+    for _ in range(count):
+        e = random.choice(effects)
+        left = random.randint(0,90)
+        top = random.randint(10,90)
+        size = random.randint(50,120)
+        effects_html += f"""
+        <div class="effect_item" style="left:{left}%; top:{top}%; font-size:{size}px;">{e}</div>
+        """
+    effect_placeholder.markdown(effects_html, unsafe_allow_html=True)
+    time.sleep(5)
+    effect_placeholder.empty()
+
+# 웃긴 대화형 소설 이유
+def generate_long_funny_reason(score, w1, w2):
+    if score <= 40:
+        return f"""
+'{w1}': '어… 왜 거기 있어?' 😢
+'{w2}': '나? 그냥 햇빛 좀 쬐려고…'
+둘은 서로 눈치만 보고 있어요. 서로를 발견하고 깜짝 놀랐지만, 곧 '아무 일도 없었던 척' 하며 서성입니다.
+가끔 서로 장난을 치려다 실패해서 어색하게 웃음을 짓고,
+심지어 지나가는 사람들도 '저거 뭐야?' 하며 쳐다보죠.
+결국 이렇게 낮은 점수가 나온 이유는 서로 너무 조심스럽고 수줍어해서랍니다!
+"""
+
+    elif score <= 70:
+        return f"""
+'{w1}': '이 장난감 내가 먼저 잡았다!' 😂
+'{w2}': '어, 나도 하나 가져갈래!'
+둘은 장난치며 놀다가 중간중간 서로를 놀리기도 하고, 웃음이 터지기도 합니다.
+때때로 서로 장난이 과열되어 뒤엉키기도 하고, 주변 사람들이 '두 사람 진짜 장난꾸러기네!'라고 감탄해요.
+이런 귀엽고 웃긴 상황 때문에 중간 점수가 나왔네요!
+"""
+
+    elif score <= 99:
+        return f"""
+'{w1}': '너 오늘 왜 이렇게 귀여워?' 💖
+'{w2}': '뭐? 너도 느끼고 있지?'
+둘은 서로의 작은 행동 하나하나에 행복을 느끼며 장난을 치고 웃음을 주고받아요.
+때로는 서로를 보고 '이럴 땐 정말 마음이 통하네!'라며 감탄하고,
+주변 사람들도 자연스럽게 케미를 느끼며 흐뭇하게 바라봅니다.
+높은 점수가 나온 이유는 서로에게 즐거움을 주고받는 긍정적 에너지가 넘치기 때문입니다!
+"""
+
+    else:
+        return f"""
+'{w1}': '드디어 우리가 만났구나! 💍'
+'{w2}': '맞아! 이제 모든 폭죽은 우리를 위해 터지겠네!'
+둘은 서로를 바라보며 천생연분임을 확신하고, 반지 💍 폭죽이 터집니다.
+서로의 마음을 확인하고 함께 앞으로의 모험을 계획하며, 웃음과 사랑이 넘쳐납니다.
+점수 100%는 둘 사이의 완벽한 궁합을 상징하며, 모든 것이 축제처럼 느껴지기 때문에 이렇게 높은 점수가 나온 것이랍니다!
+"""
+
+# 점수별 색상
+def get_score_style(score):
+    if score <= 20: return "color:blue; background-color:#a0c4ff; padding:10px; border-radius:15px;"
+    elif score <= 40: return "color:darkblue; background-color:#bdb2ff; padding:10px; border-radius:15px;"
+    elif score <= 60: return "color:purple; background-color:#ffc6ff; padding:10px; border-radius:15px;"
+    elif score <= 80: return "color:orange; background-color:#ffd6a5; padding:10px; border-radius:15px;"
+    elif score <= 99: return "color:red; background-color:#ffadad; padding:10px; border-radius:15px;"
+    else: return "color:white; background-color:#ff69b4; padding:10px; border-radius:15px; font-weight:bold;"
+
+# 궁합 보기 버튼
+if st.button("궁합 보기 ✨") and w1 and w2:
+    score_placeholder.empty()
+    result_placeholder.empty()
+    effect_placeholder.empty()
+
+    score = calc_score(w1, w2)
+    score_style = get_score_style(score)
+    score_placeholder.markdown(f'<div class="equals" style="{score_style}">= {score}%</div>', unsafe_allow_html=True)
+    result_placeholder.markdown(f'<div class="result_text">{generate_long_funny_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
+    show_explosion(score)
+
+# 단어 초기화
+if st.button("단어 초기화 🔄"):
+    st.session_state.word1 = ""
+    st.session_state.word2 = ""
+    score_placeholder.empty()
+    result_placeholder.empty()
+    effect_placeholder.empty()
+
+# 점수 공식 & 주의사항
+st.markdown("""
+<hr style='border:2px dashed white;'/>
+
+<div style='text-align:center; color:white; font-size:20px; margin-top:20px;'>
+<b>💡 점수 계산 공식:</b> <br>
+점수 = 100 - |(단어1 획수 - 단어2 획수) × 5| <br>
+※ 점수는 0~100 사이로 제한됩니다.<br><br>
+<b>⚠️ 주의사항:</b> 단순 재미용입니다. 과몰입 금지! 😆
+</div>
+""", unsafe_allow_html=True)
