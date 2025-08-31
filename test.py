@@ -2,9 +2,10 @@ import streamlit as st
 import random
 import time
 
+# 페이지 설정
 st.set_page_config(page_title="💖단어 궁합 테스트💖", layout="wide")
 
-# CSS
+# CSS 스타일
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"]{
@@ -45,6 +46,15 @@ result_placeholder = st.empty()
 score_placeholder = st.empty()
 effect_placeholder = st.empty()
 
+# 점수 계산 (단어 획수 기반)
+def calc_score(word1, word2):
+    def count_strokes(word):
+        # 간단화: 한 글자당 평균 2획 (실제 한글 획수 계산 필요시 더 정교하게)
+        return sum([2 for _ in word])
+    diff = abs(count_strokes(word1) - count_strokes(word2))
+    score = max(0, 100 - diff * 5)
+    return score
+
 # 점수별 효과
 def generate_effect_list(score):
     if score <= 20: return ["☔","🌧️","💧"]
@@ -52,7 +62,7 @@ def generate_effect_list(score):
     elif score <= 60: return ["💖","✨"]
     elif score <= 80: return ["🌈","💖","🎉"]
     elif score <= 99: return ["💖","🎆","🎇","✨"]
-    else: return ["💖","✨","🎆","🎇","💍","💞","🌸"]
+    else: return ["💍"]
 
 def show_explosion(score, count=50):
     effects_html = ""
@@ -72,41 +82,13 @@ def show_explosion(score, count=50):
 # 대화식 이유 생성
 def generate_long_funny_reason(score, w1, w2):
     if score <= 40:
-        templates_low = [
-            f"'{w1}': '어… 너 왜 거기 있어?' 😢\n"
-            f"'{w2}': '나? 그냥 햇빛 좀 쬐려고… 근데 너도 있네.'\n"
-            f"'{w1}': '아, 그… 나 간식 먹고 있었는데…' \n"
-            f"둘은 서로를 보지만 눈치만 보고 있어요. 결국 아무 일도 안 일어나고, 가끔 서로 이상한 표정만 주고받아요. "
-            f"그래도 어쩐지 귀엽게 엉뚱한 행동으로 웃음을 줍니다."
-        ]
-        return random.choice(templates_low)
+        return f"'{w1}': '어… 왜 거기 있어?' 😢\n'{w2}': '나? 그냥 햇빛 좀 쬐려고…' \n둘은 서로 눈치만 보고 있어요. 결국 아무 일도 안 일어나고, 가끔 이상한 표정만 주고받아요. 귀엽게 엉뚱한 행동으로 웃음을 줍니다. 결국 이렇게 낮은 점수가 나왔네요!"
     elif score <= 70:
-        templates_mid = [
-            f"'{w1}': '이 장난감 내가 먼저 잡았다!' 😂\n"
-            f"'{w2}': '어, 그럼 나도 하나 가져갈래!' \n"
-            f"둘이 서로 장난을 치며 놀다가 갑자기 심쿵할 때도 있어요. "
-            f"서로 깜짝 놀라며 웃고, 가끔은 서로 눈치를 보면서 장난을 멈추기도 합니다. "
-            f"결국 이 조합은 중간 점수지만, 함께 있는 순간이 꽤 재미있고 즐거워요."
-        ]
-        return random.choice(templates_mid)
+        return f"'{w1}': '이 장난감 내가 먼저 잡았다!' 😂\n'{w2}': '어, 나도 하나 가져갈래!' \n둘이 장난치며 놀다가 심쿵할 때도 있어요. 서로 웃음을 주고받으며 중간 점수가 나왔네요!"
     elif score <= 99:
-        templates_high = [
-            f"'{w1}': '너 오늘 왜 이렇게 귀여워?' 💖\n"
-            f"'{w2}': '뭐? 너도 그거 느끼고 있지?' \n"
-            f"둘은 서로를 보며 장난을 치고, 동시에 서로의 마음을 읽어요. "
-            f"작은 행동 하나에도 행복을 느끼고, 서로 웃음을 이끌어냅니다. "
-            f"주변 사람들도 자연스럽게 둘의 케미에 빠져들고, 심장이 두근거리는 순간이 많아요."
-        ]
-        return random.choice(templates_high)
+        return f"'{w1}': '너 오늘 왜 이렇게 귀여워?' 💖\n'{w2}': '뭐? 너도 느끼고 있지?' \n둘은 서로 장난치고 행복을 느껴요. 주변 사람들도 자연스럽게 케미에 빠지고, 높은 점수가 나왔어요!"
     else:
-        templates_perfect = [
-            f"'{w1}': '드디어 우리가 만났구나! 💍'\n"
-            f"'{w2}': '맞아! 이제 세상 모든 폭죽은 우리를 위해 터지겠네! 🎆'\n"
-            f"둘은 서로를 바라보며 천생연분임을 확신합니다. "
-            f"한 발짝 다가서면 서로 손을 잡고, 웃음과 사랑이 넘쳐흐릅니다. "
-            f"모든 주변이 축제처럼 변하고, 보는 사람들까지 행복하게 만드는 완벽한 조합이에요."
-        ]
-        return random.choice(templates_perfect)
+        return f"'{w1}': '드디어 우리가 만났구나! 💍'\n'{w2}': '맞아! 이제 모든 폭죽은 우리를 위해 터지겠네!' \n둘은 서로를 바라보며 천생연분임을 확신. 세상 모든 것이 축제처럼 느껴지고, 점수 100% 완벽한 궁합이에요!"
 
 # 점수별 색상
 def get_score_style(score):
@@ -119,26 +101,15 @@ def get_score_style(score):
 
 # 궁합 버튼
 if st.button("궁합 보기 ✨") and w1 and w2:
-    # 초기화
     score_placeholder.empty()
     result_placeholder.empty()
     effect_placeholder.empty()
 
-    score = random.randint(0,100)
+    score = calc_score(w1, w2)
     score_style = get_score_style(score)
     score_placeholder.markdown(f'<div class="equals" style="{score_style}">= {score}%</div>', unsafe_allow_html=True)
     result_placeholder.markdown(f'<div class="result_text">{generate_long_funny_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
     show_explosion(score)
-
-    if score == 100:
-        st.markdown("""
-        <div style='text-align:center; margin-top:20px;'>
-            <img src='https://i.ibb.co/2Zr91gF/bride.png' width='180'>
-            <img src='https://i.ibb.co/7Yw2gFt/groom.png' width='180'>
-            <p style='font-size:60px;color:red;'>💖 신랑과 신부 등장! 💖</p>
-        </div>
-        """, unsafe_allow_html=True)
-        show_explosion(score)
 
 # 단어 초기화
 if st.button("단어 초기화 🔄"):
@@ -147,3 +118,14 @@ if st.button("단어 초기화 🔄"):
     score_placeholder.empty()
     result_placeholder.empty()
     effect_placeholder.empty()
+
+# 점수 계산 공식 및 주의사항 하단
+st.markdown("""
+<hr style='border:2px dashed white;'/>
+<div style='text-align:center; color:white; font-size:20px; margin-top:20px;'>
+<b>💡 점수 계산 공식:</b> <br>
+점수 = 100 - |(단어1 획수 - 단어2 획수) × 5| <br>
+※ 점수는 0~100 사이로 제한됩니다.<br><br>
+<b>⚠️ 주의사항:</b> 단순 재미용입니다. 과몰입 금지! 😆
+</div>
+""", unsafe_allow_html=True)
