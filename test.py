@@ -1,5 +1,6 @@
 import streamlit as st
-import random, time
+import random
+import time
 
 st.set_page_config(page_title="💖단어 궁합 앱💖", layout="wide")
 
@@ -31,18 +32,18 @@ input {font-size:60px; padding:60px; border-radius:30px; border:3px solid #fff; 
 </style>
 """, unsafe_allow_html=True)
 
-# 화면 맨 위에 제목과 입력 상자
+# 화면 맨 위 제목과 입력 상자
 st.markdown('<div class="top_centered">', unsafe_allow_html=True)
 st.markdown("<h1>💖 단어 궁합 테스트 💖</h1>", unsafe_allow_html=True)
 
 # 입력 상자 + 기호
 col1, col2, col3 = st.columns([1,0.1,1])
 with col1:
-    w1 = st.text_input("", key="word1", max_chars=15)
+    w1 = st.text_input("첫 번째 단어", key="word1", max_chars=15)
 with col2:
     st.markdown('<div class="plus">+</div>', unsafe_allow_html=True)
 with col3:
-    w2 = st.text_input("", key="word2", max_chars=15)
+    w2 = st.text_input("두 번째 단어", key="word2", max_chars=15)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # 점수별 이유
@@ -75,8 +76,8 @@ def generate_effect_list(score):
     else:
         return ["💖","✨","🎆","🎇","💍","💞","🌸"]
 
-# 화면에 효과 무작위 생성
-def show_effect(score, count=30):
+# 화면에 폭발 효과
+def show_explosion(score, count=30):
     effects = generate_effect_list(score)
     for _ in range(count):
         e = random.choice(effects)
@@ -89,16 +90,12 @@ def show_effect(score, count=30):
 
 # 궁합 버튼
 if st.button("궁합 보기 ✨") and w1 and w2:
-    score_placeholder = st.empty()
-    desc_placeholder = st.empty()
     score = random.randint(0,100)
-    for i in range(score+1):
-        score_placeholder.markdown(f'<div class="equals">=</div><span class="score_text"> {i}%</span>', unsafe_allow_html=True)
-        desc_placeholder.markdown(f'<div class="result_text">{generate_reason(i, w1, w2)}</div>', unsafe_allow_html=True)
-        show_effect(i, count=5)
-        time.sleep(0.02)
+    st.markdown(f'<div class="equals">=</div><span class="score_text"> {score}%</span>', unsafe_allow_html=True)
+    st.markdown(f'<div class="result_text">{generate_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
+    show_explosion(score, count=50)  # 결과 나올 때 한 번만 폭발
+
     if score == 100:
-        # 신랑/신부 이미지와 여러 레이어 폭발
         st.markdown("""
         <div style='text-align:center; margin-top:20px;'>
             <img src='https://i.ibb.co/2Zr91gF/bride.png' width='180'>
@@ -106,6 +103,4 @@ if st.button("궁합 보기 ✨") and w1 and w2:
             <p style='font-size:60px;color:red;'>💖 신랑과 신부 등장! 💖</p>
         </div>
         """, unsafe_allow_html=True)
-        for _ in range(5):
-            show_effect(score, count=50)
-            time.sleep(0.1)
+        show_explosion(score, count=50)  # 100점일 때 추가 화려하게
