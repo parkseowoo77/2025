@@ -4,38 +4,55 @@ import time
 
 st.set_page_config(page_title="💖단어 궁합 앱💖", layout="wide")
 
-# 🌸 전체 스타일 + 애니메이션
+# 🌸 전체 스타일
 st.markdown("""
 <style>
 body {
-    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fad0c4 100%);
+    margin:0;
+    padding:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
     background-size: 400% 400%;
     animation: gradientBG 10s ease infinite;
     color: white;
     font-family: 'Arial', sans-serif;
+    overflow: hidden;
 }
 @keyframes gradientBG {
     0% {background-position:0% 50%}
     50% {background-position:100% 50%}
     100% {background-position:0% 50%}
 }
+.container {
+    text-align: center;
+    z-index: 10;
+}
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
 .input-box {
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.2);
     padding: 50px;
-    border-radius: 25px;
-    width: 50%;
+    border-radius: 30px;
+    width: 400px;
     margin: auto;
     text-align: center;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255,255,255,0.3);
 }
 input, button {
-    font-size: 20px;
+    font-size: 18px;
     padding: 12px;
-    border-radius: 15px;
+    border-radius: 12px;
     border: none;
     outline: none;
+    margin-top: 10px;
 }
 button {
     background-color: #ff6b81;
@@ -46,9 +63,10 @@ button {
 }
 .floating {
     position: fixed;
-    top: -10px;
+    top: -50px;
     font-size: 24px;
-    animation: floatDown 3s linear infinite;
+    animation: floatDown 4s linear infinite;
+    z-index: 0;
 }
 @keyframes floatDown {
     0% { transform: translateY(0) rotate(0deg); opacity: 1; }
@@ -57,35 +75,85 @@ button {
 </style>
 """, unsafe_allow_html=True)
 
-# 🌟 시작 화면 하트/별/반짝이 배치
-symbols = ["❤️", "⭐", "💖", "✨"]
+# 하늘에서 떨어지는 하트/별/반짝이
+symbols = ["❤️", "⭐", "💖", "✨", "💥", "🔥"]
 colors = ["red","pink","yellow","white","purple","lightblue"]
 floating_html = ""
 for i in range(0, 100, 5):
     sym = random.choice(symbols)
     color = random.choice(colors)
-    floating_html += f'<div class="floating" style="left:{i}%; color:{color};">{sym}</div>'
+    left = random.randint(0, 100)
+    floating_html += f'<div class="floating" style="left:{left}%; color:{color};">{sym}</div>'
 st.markdown(floating_html, unsafe_allow_html=True)
 
-# 타이틀 + 입력 박스
-st.title("💖 단어 궁합 테스트 💖")
+# 중앙 컨테이너
+st.markdown('<div class="container">', unsafe_allow_html=True)
+st.markdown("<h1>💖 단어 궁합 테스트 💖</h1>", unsafe_allow_html=True)
 st.markdown('<div class="input-box">', unsafe_allow_html=True)
 
 word1 = st.text_input("첫 번째 단어를 입력하세요:")
 word2 = st.text_input("두 번째 단어를 입력하세요:")
 
 st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
-# 점수 계산 및 효과
+# 단어 속성 매핑
+def get_word_traits(word):
+    traits = {
+        "초코": ["달콤", "쫀득", "장난꾸러기"],
+        "커피": ["쌉쌀", "뜨거움", "활력"],
+        "사과": ["상큼", "발랄", "건강"],
+        "바나나": ["부드럽", "노랗", "유머감각"],
+        "햄버거": ["기름짐", "배부름", "행복"],
+        "피자": ["치즈폭발", "중독성", "파티감각"],
+        # 필요하면 단어 더 추가 가능
+    }
+    return traits.get(word, ["평범", "신비", "알수없음"])
+
+# 즉석 코믹 설명 생성
+def generate_funny_description(score, w1, w2):
+    traits1 = get_word_traits(w1)
+    traits2 = get_word_traits(w2)
+    
+    # 점수별 상황
+    if score <= 20:
+        reason = f"{w1}({random.choice(traits1)})와 {w2}({random.choice(traits2)})… 서로 너무 달라서 초코처럼 싸우고 커피처럼 쌉싸름! 🥋😂"
+        description = f"길거리에서 {w1}가 {w2}에게 돌진하고, 지나가던 강아지는 '뭐야 이거?' 🐶💨"
+    elif score <= 40:
+        reason = f"{w1}({random.choice(traits1)})가 {w2}({random.choice(traits2)})에게 장난치지만, {w2}는 쌉싸름하게 반응 🤧💥"
+        description = f"{w1}가 {w2}에게 포옹하려다 엉덩방아! 🐘🤣 지나가던 고양이도 심장 터질 뻔 🐱"
+    elif score <= 60:
+        reason = f"{w1}와 {w2}는 서로 맛을 알아가는 중 🍫☕ 둘이 섞이면 살짝 혼란 🌪️"
+        description = f"주변 친구들: '케이크 만들고 있는 거냐?' 🎂🤣 바람 불면 둘이 하늘로 날아감 🪁💨"
+    elif score <= 80:
+        reason = f"달콤쌉쌀 조합 완성! 😍 {w1} 웃으면 {w2} 심쿵 💣✨"
+        description = "장난치다 폭발, 주변 사람들: '대피! 불났다!' 🔥🏃‍♂️💨 강아지도 귀여워서 놀람 🐶"
+    elif score <= 99:
+        reason = f"레전드 커플 직전! 💖 {w1}+{w2}, 달콤+쌉쌀+웃음 폭발 🌈💥"
+        description = "둘이 웃으면 주변 사람들 기절 😵‍💫 하늘에서 별이 떨어지고, 꽃들도 둘을 향해 고개 끄덕임 🌸🌟"
+    else:
+        reason = f"와우… {w1}+{w2}, 천생연분 레벨 💍🍫☕ 달콤+쌉쌀 폭발 😆💥"
+        description = "주변 사람들: 웃음+눈물+심쿵 😂😭💖 고양이, 강아지, 토끼: '이 커플 레전드!' 🐱🐶🐇 UFO 등장 👽✨"
+    
+    return reason, description
+
+# 궁합 버튼
 if st.button("궁합 보기 ✨"):
     if word1 and word2:
-        ranges = [random.randint(i, i+9) for i in range(0, 100, 10)]
-        score = random.choice(ranges)
         score_placeholder = st.empty()
+        reason_placeholder = st.empty()
+        desc_placeholder = st.empty()
+        
+        # 점수 랜덤 생성
+        score = random.randint(0,100)
 
+        # 실시간 점수 증가
         for i in range(score + 1):
-            # 실시간 점수 증가
             score_placeholder.subheader(f"✨ {word1} ✨ + ✨ {word2} ✨ = ❤️ 궁합 {i}% ❤️")
+            
+            reason, desc = generate_funny_description(i, word1, word2)
+            reason_placeholder.markdown(f"📌 이유: {reason}")
+            desc_placeholder.markdown(f"💬 설명: {desc}")
 
             # 점수별 배경 색 변화
             if i <= 20:
@@ -111,67 +179,4 @@ if st.button("궁합 보기 ✨"):
                     background-size: 1400% 1400%;
                     animation: rainbowBG 5s ease infinite;
                 }
-                @keyframes rainbowBG {
-                    0% {background-position:0% 50%}
-                    50% {background-position:100% 50%}
-                    100% {background-position:0% 50%}
-                }
-                </style>
-                """, unsafe_allow_html=True)
-
-            # 점수 비례 하트/별 증가
-            floating_count = int(i/5) + 1
-            dynamic_html = ""
-            for n in range(floating_count):
-                sym = random.choice(symbols)
-                color = random.choice(colors)
-                left = random.randint(0, 100)
-                dynamic_html += f'<div class="floating" style="left:{left}%; color:{color};">{sym}</div>'
-            st.markdown(dynamic_html, unsafe_allow_html=True)
-            time.sleep(0.02)
-
-        # 점수대별 음악 + 효과
-        if score <= 20:
-            st.warning(f"{score}% : 조금 서툰 궁합 🌫️")
-            st.markdown('<audio autoplay><source src="https://www.fesliyanstudios.com/play-mp3/4384" type="audio/mpeg"></audio>', unsafe_allow_html=True)
-
-        elif score <= 40:
-            st.info(f"{score}% : 흐린 날씨 같은 궁합 🌧️")
-            st.snow()
-            st.markdown('<audio autoplay><source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg"></audio>', unsafe_allow_html=True)
-
-        elif score <= 60:
-            st.success(f"{score}% : 따뜻하고 달콤한 궁합 ☀️🌱")
-            st.markdown('<audio autoplay><source src="https://www.fesliyanstudios.com/play-mp3/6678" type="audio/mpeg"></audio>', unsafe_allow_html=True)
-
-        elif score <= 80:
-            st.success(f"{score}% : 즐겁고 사랑스러운 궁합 🎶🎉")
-            st.markdown('<audio autoplay><source src="https://www.fesliyanstudios.com/play-mp3/6677" type="audio/mpeg"></audio>', unsafe_allow_html=True)
-
-        elif score <= 99:
-            st.success(f"{score}% : 사랑이 넘치는 최고의 궁합 💖🎆")
-            st.markdown('<audio autoplay><source src="https://www.fesliyanstudios.com/play-mp3/6292" type="audio/mpeg"></audio>', unsafe_allow_html=True)
-
-        elif score == 100:
-            st.success("🌈💖🎆🎉 세상에서 제일 화려한 궁합! 운명 그 자체 💍")
-            st.balloons()
-            st.snow()
-            # 화면 가득 하트 + 폭죽 + 웨딩 음악
-            st.markdown("""
-            <style>
-            .heart {position: fixed; top:-10px; font-size:28px; animation: fall 3s linear infinite;}
-            @keyframes fall {0% {transform:translateY(0) rotate(0deg); opacity:1;} 100% {transform:translateY(100vh) rotate(360deg); opacity:0;}}
-            </style>
-            """, unsafe_allow_html=True)
-            hearts_html = ""
-            for left in range(0, 100, 3):
-                color = random.choice(colors)
-                hearts_html += f'<div class="heart" style="left:{left}%; color:{color}">❤️</div>'
-            st.markdown(hearts_html, unsafe_allow_html=True)
-            st.markdown("""
-            <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:url('https://i.imgur.com/xMXzQ9Z.gif') center/cover no-repeat;opacity:0.85;pointer-events:none;"></div>
-            <audio autoplay><source src="https://www.fesliyanstudios.com/play-mp3/6679" type="audio/mpeg"></audio>
-            """, unsafe_allow_html=True)
-
-    else:
-        st.warning("단어를 모두 입력해주세요!")
+                @keyframes rainbow
