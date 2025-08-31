@@ -69,10 +69,3 @@ if st.button("궁합 보기 ✨") and w1 and w2:
             <p style='font-size:40px;color:red;'>💖 신랑과 신부 등장! 💖</p>
         </div>
         """, unsafe_allow_html=True)
-
-                    <img src="https://i.ibb.co/2Zr91gF/bride.png" width="100" style="animation: floatDown 5s linear infinite;">
-                    <img src="https://i.ibb.co/7Yw2gFt/groom.png" width="100" style="animation: floatDown 5s linear infinite;">
-                    <p style="font-size:30px; color:red;">💖 신랑과 신부 등장! 💖</p>
-                </div>
-                """, unsafe_allow_html=True)
-            time.sleep(0.02)
