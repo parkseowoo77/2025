@@ -19,7 +19,7 @@ input {font-size:36px; padding:30px; border-radius:25px; border:3px solid #fff; 
 .equals {font-size:60px; color:white; font-weight:bold; margin:20px 10px; display:inline;}
 .score_text {font-size:60px; color:white; font-weight:bold; display:inline;}
 .result_text {font-size:48px; color:white; margin-top:15px;}
-.fireworks_full {position:fixed; top:0; left:0; width:100%; height:100%; font-size:80px; text-align:center; animation:explode 1s ease;}
+.effect_full {position:fixed; top:0; left:0; width:100%; height:100%; font-size:60px; text-align:center; animation:explode 1s ease;}
 @keyframes explode {0% {opacity:1;} 100% {opacity:0; transform: scale(3);}}
 </style>
 """, unsafe_allow_html=True)
@@ -38,20 +38,35 @@ with col3:
 
 st.markdown('<div style="margin-top:20px;"></div>', unsafe_allow_html=True)
 
-# 즉석 이유 생성
+# 점수별 이유
 def generate_reason(score, w1, w2):
     if score <= 20:
-        return f"'{w1}'이랑 '{w2}'… 같이 있어도 마치 서로 다른 영화 보는 기분 😢😂"
+        return f"'{w1}'이랑 '{w2}'… 같이 있어도 마음은 비오는 날처럼 😢🌧️"
     elif score <= 40:
-        return f"'{w1}' + '{w2}'… 오잉? 같이하면 웃음 폭발! 근데 약간 엉뚱함 😂🎬"
+        return f"'{w1}' + '{w2}'… 웃기지만 약간 엉뚱함 😂🌦️"
     elif score <= 60:
-        return f"'{w1}'과 '{w2}'… 서로 장난치면서 깔깔거리기 딱 좋은 조합 😆🍿"
+        return f"'{w1}'과 '{w2}'… 깔깔거리면서 즐기기 딱 좋아 😆✨"
     elif score <= 80:
-        return f"'{w1}' + '{w2}'… 달콤함 폭발! 손잡으면 주변이 무지개 🌈💞"
+        return f"'{w1}' + '{w2}'… 달콤 폭발! 🌈💖"
     elif score <= 99:
         return f"'{w1}'과 '{w2}'… 심쿵 심쿵! 하트와 별이 팡팡 💖✨"
     else:
         return f"'{w1}' + '{w2}'… 천생연분! 💍 신랑👰와 신부🤵 등장! 하트/꽃 폭발 💖🌸💥"
+
+# 점수별 효과
+def generate_effect(score):
+    if score <= 20:
+        return "☔🌧️☔🌧️☔🌧️"
+    elif score <= 40:
+        return "💦💧💦💧"
+    elif score <= 60:
+        return "💖✨💖✨"
+    elif score <= 80:
+        return "🌈💖🌈💖🎉"
+    elif score <= 99:
+        return "💖🎆💖🎇💖✨"
+    else:
+        return "💖✨🎆🎇💍💞🌸💖"
 
 # 궁합 버튼
 if st.button("궁합 보기 ✨") and w1 and w2:
@@ -61,9 +76,8 @@ if st.button("궁합 보기 ✨") and w1 and w2:
     for i in range(score+1):
         score_placeholder.markdown(f'<div class="equals">=</div><span class="score_text"> {i}%</span>', unsafe_allow_html=True)
         desc_placeholder.markdown(f'<div class="result_text">{generate_reason(i, w1, w2)}</div>', unsafe_allow_html=True)
-        # 점수별 화면 전체 폭죽/하트 한번 터짐
-        if i>50 and i<100 and i%20==0:
-            st.markdown('<div class="fireworks_full">💖✨🎆🎇💖✨🎆🎇</div>', unsafe_allow_html=True)
+        # 점수마다 화면 전체 효과
+        st.markdown(f'<div class="effect_full">{generate_effect(i)}</div>', unsafe_allow_html=True)
         time.sleep(0.02)
     if score == 100:
         st.markdown("""
@@ -71,6 +85,6 @@ if st.button("궁합 보기 ✨") and w1 and w2:
             <img src='https://i.ibb.co/2Zr91gF/bride.png' width='150'>
             <img src='https://i.ibb.co/7Yw2gFt/groom.png' width='150'>
             <p style='font-size:60px;color:red;'>💖 신랑과 신부 등장! 💖</p>
-            <div class="fireworks_full">💖✨🎆🎇💖✨🎆🎇💖✨🎆🎇</div>
+            <div class="effect_full">💖✨🎆🎇💍💞🌸💖</div>
         </div>
         """, unsafe_allow_html=True)
