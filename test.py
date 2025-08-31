@@ -4,7 +4,7 @@ import time
 
 st.set_page_config(page_title="💖단어 궁합 앱💖", layout="wide")
 
-# 스타일: 배경 + 중앙 정렬 + 글씨 크게 + 상자 크게 + 하트/별 애니메이션
+# 스타일: 배경 + 중앙 정렬 + 입력창 + 하트/별 애니메이션
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"]{
@@ -18,40 +18,37 @@ st.markdown("""
     100% {background-position:0% 50%}
 }
 .centered {
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    flex-direction: column;
+    display: flex; justify-content: center; align-items: center; flex-direction: column;
     height: 100vh;
-    text-align: center;
 }
 h1 {
+    text-align: center; 
     color: white; 
-    font-size: 5em; 
-    text-shadow: 3px 3px 15px rgba(0,0,0,0.5);
-    margin-bottom: 40px;
+    font-size: 3em; 
+    text-shadow: 2px 2px 12px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
 }
 input {
-    font-size: 26px; 
-    padding: 20px; 
-    border-radius: 20px; 
-    border: 3px solid #fff; 
+    font-size: 18px; 
+    padding: 10px; 
+    border-radius: 10px; 
+    border: 2px solid #fff; 
     outline: none;
     text-align: center;
-    width: 400px;
-    margin-bottom: 20px;
+    width: 250px;
+    margin-bottom: 10px;
 }
 button {
     background-color: #ff6b81; 
     color: white; 
     font-weight: bold; 
     cursor: pointer; 
-    font-size: 24px;
-    padding: 15px 35px;
-    border-radius: 20px;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 10px;
     border: none;
 }
-.floating {position: fixed; top: -50px; font-size: 36px; animation: floatDown 4s linear infinite; z-index: 0;}
+.floating {position: fixed; top: -50px; font-size: 24px; animation: floatDown 4s linear infinite; z-index: 0;}
 @keyframes floatDown {0% { transform: translateY(0) rotate(0deg); opacity: 1;} 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }}
 </style>
 """, unsafe_allow_html=True)
@@ -74,7 +71,7 @@ word1 = st.text_input("첫 번째 단어를 입력하세요:")
 word2 = st.text_input("두 번째 단어를 입력하세요:")
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 단어 특성
+# 단어 특성 예시
 def get_word_traits(word):
     traits = {
         "초코": ["달콤", "쫀득", "장난꾸러기"],
@@ -133,9 +130,9 @@ if st.button("궁합 보기 ✨"):
                 .wedding {text-align:center;}
                 </style>
                 <div class="wedding">
-                    <img src="https://i.ibb.co/2Zr91gF/bride.png" width="150" style="animation: floatDown 5s linear infinite;">
-                    <img src="https://i.ibb.co/7Yw2gFt/groom.png" width="150" style="animation: floatDown 5s linear infinite;">
-                    <p style="font-size:40px; color:red;">💖 신랑과 신부 등장! 💖</p>
+                    <img src="https://i.ibb.co/2Zr91gF/bride.png" width="100" style="animation: floatDown 5s linear infinite;">
+                    <img src="https://i.ibb.co/7Yw2gFt/groom.png" width="100" style="animation: floatDown 5s linear infinite;">
+                    <p style="font-size:30px; color:red;">💖 신랑과 신부 등장! 💖</p>
                 </div>
                 """, unsafe_allow_html=True)
             time.sleep(0.02)
