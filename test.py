@@ -4,7 +4,7 @@ import time
 
 st.set_page_config(page_title="💖단어 궁합 앱💖", layout="wide")
 
-# 전체 스타일
+# 스타일: 배경 + 중앙 정렬 + 입력창 + 하트/별 애니메이션
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"]{
@@ -17,31 +17,43 @@ st.markdown("""
     50% {background-position:100% 50%}
     100% {background-position:0% 50%}
 }
-h1 {
-    text-align: center; color: white; font-size: 3em;
-    text-shadow: 2px 2px 12px rgba(0,0,0,0.5);
-}
 .centered {
     display: flex; justify-content: center; align-items: center; flex-direction: column;
-    height: 80vh;
+    height: 100vh;
 }
-.input-box {
-    background: rgba(255,255,255,0.2); padding: 50px; border-radius: 30px; width: 400px;
-    text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(15px);
-    border: 2px solid rgba(255,255,255,0.3);
+h1 {
+    text-align: center; 
+    color: white; 
+    font-size: 3em; 
+    text-shadow: 2px 2px 12px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
 }
-input, button {
-    font-size: 18px; padding: 12px; border-radius: 12px; border: none; margin-top: 10px;
+input {
+    font-size: 18px; 
+    padding: 10px; 
+    border-radius: 10px; 
+    border: 2px solid #fff; 
+    outline: none;
+    text-align: center;
+    width: 250px;
+    margin-bottom: 10px;
 }
 button {
-    background-color: #ff6b81; color: white; font-weight: bold; cursor: pointer;
+    background-color: #ff6b81; 
+    color: white; 
+    font-weight: bold; 
+    cursor: pointer; 
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
 }
 .floating {position: fixed; top: -50px; font-size: 24px; animation: floatDown 4s linear infinite; z-index: 0;}
 @keyframes floatDown {0% { transform: translateY(0) rotate(0deg); opacity: 1;} 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }}
 </style>
 """, unsafe_allow_html=True)
 
-# 하트/별/폭죽 떨어지는 효과
+# 하트/별 떨어지는 효과
 symbols = ["❤️", "⭐", "💖", "✨", "💥", "🔥"]
 colors = ["red","pink","yellow","white","purple","lightblue"]
 floating_html = ""
@@ -55,15 +67,11 @@ st.markdown(floating_html, unsafe_allow_html=True)
 # 중앙 컨테이너
 st.markdown('<div class="centered">', unsafe_allow_html=True)
 st.markdown("<h1>💖 단어 궁합 테스트 💖</h1>", unsafe_allow_html=True)
-st.markdown('<div class="input-box">', unsafe_allow_html=True)
-
 word1 = st.text_input("첫 번째 단어를 입력하세요:")
 word2 = st.text_input("두 번째 단어를 입력하세요:")
-
-st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 단어 특성
+# 단어 특성 예시
 def get_word_traits(word):
     traits = {
         "초코": ["달콤", "쫀득", "장난꾸러기"],
@@ -79,63 +87,52 @@ def get_word_traits(word):
 def generate_funny_description(score, w1, w2):
     traits1 = get_word_traits(w1)
     traits2 = get_word_traits(w2)
+    reason = f"{w1}({random.choice(traits1)}) + {w2}({random.choice(traits2)})"
+    description = ""
+    
     if score <= 20:
-        reason = f"{w1}({random.choice(traits1)})와 {w2}({random.choice(traits2)})… 서로 너무 달라서 길거리 코미디 폭발! 🥋😂"
-        description = f"{w1}가 {w2}에게 돌진, 지나가던 강아지: '뭐야 이거?' 🐶💨"
+        description = f"{reason}… 서로 너무 달라서 우주도 '뭐야 이 커플?' 🌌😂 길거리 코미디 폭발, 지나가던 강아지 기절 🐶💨"
     elif score <= 40:
-        reason = f"{w1}({random.choice(traits1)})가 {w2}({random.choice(traits2)})에게 장난치지만, {w2}는 쌉싸름 🤧💥"
-        description = f"{w1} 포옹하려다 엉덩방아! 🐘🤣 고양이도 놀람 🐱"
+        description = f"{reason}… 장난치다 엉덩방아! 🐘🤣 주변 고양이: '또 뭐야?' 🐱 점심 도시락 폭발 🍱💥"
     elif score <= 60:
-        reason = f"{w1}와 {w2}는 서로 맛을 알아가는 중 🍫☕ 혼란스러운 케미 🌪️"
-        description = "주변 친구들: '케이크 만들고 있는 거냐?' 🎂🤣 바람 불면 둘이 날아감 🪁💨"
+        description = f"{reason}… 서로 맛을 알아가는 중 🍫☕ 친구들: '케이크 만들고 있어?' 🎂🤣 바람 불면 둘이 날아감 🪁"
     elif score <= 80:
-        reason = f"달콤쌉쌀 조합 완성! 😍 {w1} 웃으면 {w2} 심쿵 💣✨"
-        description = "장난치다 폭발, 주변 사람들: '대피! 불났다!' 🔥🏃‍♂️💨"
+        description = f"{reason}… 달콤쌉쌀 조합 완성! 😍 웃으면 주변 사람들 심쿵 💣✨ 장난치다 폭발 🔥🏃‍♂️"
     elif score <= 99:
-        reason = f"레전드 커플 직전! 💖 {w1}+{w2}, 달콤+쌉쌀+웃음 폭발 🌈💥"
-        description = "둘이 웃으면 주변 사람들 기절 😵‍💫 별 떨어지고 꽃들이 고개 끄덕임 🌸🌟"
-    else:
-        reason = f"와우… {w1}+{w2}, 천생연분 레벨 💍🍫☕ 달콤+쌉쌀 폭발 😆💥"
-        description = "주변 사람들: 웃음+눈물+심쿵 😂😭💖 고양이, 강아지, 토끼: '레전드!' 🐱🐶🐇 UFO 등장 👽✨"
-    return reason, description
+        description = f"{reason}… 레전드 커플 직전! 💖 웃으면 주변 기절 😵‍💫 별 떨어지고 꽃 고개 끄덕임 🌸🌟 UFO도 지나감 👽✨"
+    else:  # 100점
+        description = f"{reason}… 천생연분! 💍 신랑👰와 신부🤵 등장, 하트와 꽃 폭발 💖🌸💥 모두 박수 👏🎉 폭죽 터지고 모든 사람들이 감탄함 😆"
+    return description
 
 # 궁합 버튼
 if st.button("궁합 보기 ✨"):
     if word1 and word2:
         score_placeholder = st.empty()
-        reason_placeholder = st.empty()
         desc_placeholder = st.empty()
         score = random.randint(0,100)
 
         for i in range(score+1):
             score_placeholder.subheader(f"✨ {word1} ✨ + ✨ {word2} ✨ = ❤️ 궁합 {i}% ❤️")
-            reason, desc = generate_funny_description(i, word1, word2)
-            reason_placeholder.markdown(f"📌 이유: {reason}")
-            desc_placeholder.markdown(f"💬 설명: {desc}")
+            description = generate_funny_description(i, word1, word2)
+            desc_placeholder.markdown(f"💬 {description}")
 
-            # 점수별 배경색 변화
+            # 점수별 배경
             if i <= 20: bg_color = "#a0c4ff"
             elif i <= 40: bg_color = "#bdb2ff"
             elif i <= 60: bg_color = "#ffc6ff"
             elif i <= 80: bg_color = "#ffadad"
             elif i <= 99: bg_color = "#ffd6a5"
-            else: bg_color = "rainbow"
-
-            if bg_color != "rainbow":
-                st.markdown(f"<style>body{{background-color:{bg_color};transition:background-color 0.3s linear;}}</style>", unsafe_allow_html=True)
-            else:
+            else: 
+                # 100점 결혼식 장면
                 st.markdown("""
                 <style>
-                body {
-                    background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #9933ff, #ff3399);
-                    background-size: 1400% 1400%;
-                    animation: rainbowBG 5s ease infinite;
-                }
-                @keyframes rainbowBG {
-                    0% {background-position:0% 50%}
-                    50% {background-position:100% 50%}
-                    100% {background-position:0% 50%}
-                }
+                body {background: linear-gradient(to top, #87ceeb, #ffffff);}
+                .wedding {text-align:center;}
                 </style>
+                <div class="wedding">
+                    <img src="https://i.ibb.co/2Zr91gF/bride.png" width="100" style="animation: floatDown 5s linear infinite;">
+                    <img src="https://i.ibb.co/7Yw2gFt/groom.png" width="100" style="animation: floatDown 5s linear infinite;">
+                    <p style="font-size:30px; color:red;">💖 신랑과 신부 등장! 💖</p>
+                </div>
                 """, unsafe_allow_html=True)
             time.sleep(0.02)
