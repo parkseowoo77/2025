@@ -2,103 +2,130 @@ import streamlit as st
 import random
 import time
 
-st.set_page_config(page_title="단어 궁합 테스트", layout="wide")
+# 페이지 설정
+st.set_page_config(page_title="💖단어 궁합 테스트💖", layout="wide")
 
-# -----------------------------
-# 스타일
-# -----------------------------
+# CSS 스타일
 st.markdown("""
 <style>
-.title {text-align: center; font-size: 50px; font-weight: bold;}
-.input-box {width: 400px; height: 70px; font-size: 35px; text-align: center;}
-.plus {font-size: 50px; text-align: center; margin: -20px;}
-.equal {font-size: 50px; text-align: center; margin-top: 20px;}
-.score {font-size: 60px; font-weight: bold; text-align: center;}
-.reason {font-size: 25px; margin-top: 20px;}
-.footer {font-size:18px; color:gray; text-align:center; margin-top:30px;}
-.emoji-effect {text-align:center; font-size:50px; animation-duration:5s;}
+[data-testid="stAppViewContainer"]{
+    background: linear-gradient(135deg, #87CEEB, #ff9a9e, #a18cd1, #fbc2eb, #89f7fe);
+    background-size: 400% 400%;
+    animation: rainbowSky 20s ease infinite;
+    overflow:hidden;
+    height:100vh;
+}
+@keyframes rainbowSky {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.top_centered {display:flex; flex-direction:column; justify-content:flex-start; align-items:center; text-align:center; padding-top:20px;}
+h1 {color:white; font-size:5em; text-shadow:3px 3px 15px rgba(0,0,0,0.5); margin-bottom:20px; text-align:center;}
+input {font-size:50px; padding:60px; border-radius:30px; border:3px solid #fff; text-align:center; width:300px; height:180px; margin-bottom:20px;}
+.plus {font-size:50px; color:white; margin:0 20px; font-weight:bold; display:flex; align-items:center; justify-content:center;}
+.equals {font-size:60px; font-weight:bold; margin:20px 10px; display:inline;}
+.score_text {font-size:60px; font-weight:bold; display:inline;}
+.result_text {font-size:30px; margin-top:15px; line-height:1.5; text-align:center;}
+.effect_item {position:fixed; font-size:50px; animation:flyRotate 5s ease forwards;}
+@keyframes flyRotate {0% {opacity:1; transform:translateY(0) rotate(0deg);}100% {opacity:0; transform:translateY(-500px) rotate(720deg) scale(2);}}
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------
-# 표지 이미지
-# -----------------------------
-st.image(["https://i.imgur.com/0y0y0y0.png", "https://i.imgur.com/1y1y1y1.png"], width=150)  # 고양이, 강아지
-st.markdown('<div class="title">단어 궁합 테스트</div>', unsafe_allow_html=True)
+# 제목과 입력
+st.markdown('<div class="top_centered">', unsafe_allow_html=True)
+st.markdown("<h1>💖 단어 궁합 테스트 💖</h1>", unsafe_allow_html=True)
 
-# -----------------------------
-# 입력창
-# -----------------------------
-w1 = st.text_input("첫 번째 단어를 입력하세요", key="w1", max_chars=20)
-w2 = st.text_input("두 번째 단어를 입력하세요", key="w2", max_chars=20)
-
-# -----------------------------
-# 점수 계산
-# -----------------------------
-last_score = None
-def calculate_score(w1, w2):
-    global last_score
-    s = (sum([ord(c) for c in w1]) + sum([ord(c) for c in w2])) % 101
-    if last_score == s:
-        s = (s + random.randint(1, 10)) % 101
-    last_score = s
-    return s
-
-# -----------------------------
-# 대화형 소설 이유
-# -----------------------------
-def generate_funny_dialog_story(score, w1, w2):
-    if score <= 40:
-        return f"""
-'{w1}': '어… 너 왜 내 앞에 있는 거야?' 😅  
-'{w2}': '나? 그냥 지나가다가… 어, 너도 여기 있었네?'  
-{w1}가 발을 헛디뎌 거의 넘어질 뻔 하고, {w2}는 놀라서 '어머! 조심해!'  
-서로 눈치만 보고 한 마디도 못 하고 있음.  
-길을 지나던 고양이와 강아지까지 와서 상황을 더 웃기게 만듬.  
-결국 점수가 낮은 이유는, 둘의 만남이 너무 어색하고 티격태격해서 웃음을 터뜨렸기 때문입니다.
-"""
-    elif score <= 70:
-        return f"""
-'{w1}': '이거 내가 먼저 잡은 거야!' 😆  
-'{w2}': '헉, 나도 가져가야지!'  
-둘이 장난치며 서로의 손을 잡으려 하지만 계속 밀리고 당기고 난리남.  
-점수가 중간인 이유는, 장난과 친근함이 섞여 케미가 조금 보였기 때문입니다.
-"""
-    elif score <= 99:
-        return f"""
-'{w1}': '오늘 너 완전 귀엽다!' 💖  
-'{w2}': '뭐? 너도 느끼고 있잖아!'  
-둘이 장난치며 길을 걷다가 {w1}가 미끄러지자 {w2}가 잡아주며 웃음 폭발.  
-점수가 높은 이유는, 설렘과 웃음이 폭발하며 서로 케미가 극대화되었기 때문입니다.
-"""
-    else:
-        return f"""
-'{w1}': '드디어 우리가 만났구나! 💍'  
-'{w2}': '맞아! 이제 모든 폭죽은 우리를 위해 터지겠네!'  
-하늘에는 반지 💍 폭죽이 터지고, 하트와 별들이 흩날리며 완전히 황홀한 장면이 펼쳐집니다.  
-점수 100%, 완전 웃기고 달콤한 궁합입니다!
-"""
-
-# -----------------------------
-# 점수 출력 및 효과
-# -----------------------------
-if w1 and w2:
-    score = calculate_score(w1, w2)
-    
+col1, col2, col3 = st.columns([1,0.1,1])
+with col1:
+    w1 = st.text_input("첫 번째 단어", key="word1", max_chars=15)
+with col2:
     st.markdown('<div class="plus">+</div>', unsafe_allow_html=True)
-    st.markdown('<div class="equal">=</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="score">{score}점</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="reason">{generate_funny_dialog_story(score, w1, w2)}</div>', unsafe_allow_html=True)
+with col3:
+    w2 = st.text_input("두 번째 단어", key="word2", max_chars=15)
+st.markdown('</div>', unsafe_allow_html=True)
 
-    # -----------------------------
-    # 점수별 화면 효과 (간단하게 반복 출력)
-    # -----------------------------
-    emoji = "🌧️" if score <= 40 else "✨" if score <= 70 else "💖" if score <= 99 else "💍"
-    for _ in range(5):  # 5초 정도 유지
-        st.markdown(f'<div class="emoji-effect">{emoji*5}</div>', unsafe_allow_html=True)
-        time.sleep(1)
+# 결과 placeholder
+result_placeholder = st.empty()
+score_placeholder = st.empty()
+effect_placeholder = st.empty()
 
-    # -----------------------------
-    # 점수 계산 공식 & 주의사항
-    # -----------------------------
-    st.markdown('<div class="footer">점수 계산 공식: (단어1의 문자 합 + 단어2의 문자 합) % 101<br>※ 단순히 재미용이며 과몰입 금지!</div>', unsafe_allow_html=True)
+# 점수 계산 (단어 획수 기반)
+def calc_score(word1, word2):
+    def count_strokes(word):
+        # 간단화: 한 글자당 평균 2획 (실제 한글 획수 계산 필요시 더 정교하게)
+        return sum([2 for _ in word])
+    diff = abs(count_strokes(word1) - count_strokes(word2))
+    score = max(0, 100 - diff * 5)
+    return score
+
+# 점수별 효과
+def generate_effect_list(score):
+    if score <= 20: return ["☔","🌧️","💧"]
+    elif score <= 40: return ["💦","💧"]
+    elif score <= 60: return ["💖","✨"]
+    elif score <= 80: return ["🌈","💖","🎉"]
+    elif score <= 99: return ["💖","🎆","🎇","✨"]
+    else: return ["💍"]
+
+def show_explosion(score, count=50):
+    effects_html = ""
+    effects = generate_effect_list(score)
+    for _ in range(count):
+        e = random.choice(effects)
+        left = random.randint(0,90)
+        top = random.randint(10,90)
+        size = random.randint(50,120)
+        effects_html += f"""
+        <div class="effect_item" style="left:{left}%; top:{top}%; font-size:{size}px;">{e}</div>
+        """
+    effect_placeholder.markdown(effects_html, unsafe_allow_html=True)
+    time.sleep(5)
+    effect_placeholder.empty()
+
+# 대화식 이유 생성
+def generate_long_funny_reason(score, w1, w2):
+    if score <= 40:
+        return f"'{w1}': '어… 왜 거기 있어?' 😢\n'{w2}': '나? 그냥 햇빛 좀 쬐려고…' \n둘은 서로 눈치만 보고 있어요. 결국 아무 일도 안 일어나고, 가끔 이상한 표정만 주고받아요. 귀엽게 엉뚱한 행동으로 웃음을 줍니다. 결국 이렇게 낮은 점수가 나왔네요!"
+    elif score <= 70:
+        return f"'{w1}': '이 장난감 내가 먼저 잡았다!' 😂\n'{w2}': '어, 나도 하나 가져갈래!' \n둘이 장난치며 놀다가 심쿵할 때도 있어요. 서로 웃음을 주고받으며 중간 점수가 나왔네요!"
+    elif score <= 99:
+        return f"'{w1}': '너 오늘 왜 이렇게 귀여워?' 💖\n'{w2}': '뭐? 너도 느끼고 있지?' \n둘은 서로 장난치고 행복을 느껴요. 주변 사람들도 자연스럽게 케미에 빠지고, 높은 점수가 나왔어요!"
+    else:
+        return f"'{w1}': '드디어 우리가 만났구나! 💍'\n'{w2}': '맞아! 이제 모든 폭죽은 우리를 위해 터지겠네!' \n둘은 서로를 바라보며 천생연분임을 확신. 세상 모든 것이 축제처럼 느껴지고, 점수 100% 완벽한 궁합이에요!"
+
+# 점수별 색상
+def get_score_style(score):
+    if score <= 20: return "color:blue; background-color:#a0c4ff; padding:10px; border-radius:15px;"
+    elif score <= 40: return "color:darkblue; background-color:#bdb2ff; padding:10px; border-radius:15px;"
+    elif score <= 60: return "color:purple; background-color:#ffc6ff; padding:10px; border-radius:15px;"
+    elif score <= 80: return "color:orange; background-color:#ffd6a5; padding:10px; border-radius:15px;"
+    elif score <= 99: return "color:red; background-color:#ffadad; padding:10px; border-radius:15px;"
+    else: return "color:white; background-color:#ff69b4; padding:10px; border-radius:15px; font-weight:bold;"
+
+# 궁합 버튼
+if st.button("궁합 보기 ✨") and w1 and w2:
+    score_placeholder.empty()
+    result_placeholder.empty()
+    effect_placeholder.empty()
+
+    score = calc_score(w1, w2)
+    score_style = get_score_style(score)
+    score_placeholder.markdown(f'<div class="equals" style="{score_style}">= {score}%</div>', unsafe_allow_html=True)
+    result_placeholder.markdown(f'<div class="result_text">{generate_long_funny_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
+    show_explosion(score)
+
+# 단어 초기화
+if st.button("단어 초기화 🔄"):
+    st.session_state.word1 = ""
+    st.session_state.word2 = ""
+    score_placeholder.empty()
+    result_placeholder.empty()
+    effect_placeholder.empty()
+
+# 점수 계산 공식 및 주의사항 하단
+st.markdown("""
+<hr style='border:2px dashed white;'/>
+<div style='text-align:center; color:white; font-size:20px; margin-top:20px;'>
+<b>💡 점수 계산 공식:</b> <br>
+점수 = 100 - |(단어1 획수 - 단어2 획수) × 5| <br>
+※ 점수는 0~100 사이로 제한됩니다.<br><br>
+<b>⚠️ 주의사항:</b> 단순 재미용입니다. 과몰입 금지! 😆
+</div>
+""", unsafe_allow_html=True)
