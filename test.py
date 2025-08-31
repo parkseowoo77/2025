@@ -50,7 +50,6 @@ last_score = None
 def calc_score(word1, word2):
     global last_score
     score = random.randint(0, 100)
-    # 같은 점수 연속 방지
     while last_score is not None and score == last_score:
         score = random.randint(0, 100)
     last_score = score
@@ -98,4 +97,33 @@ def get_score_style(score):
     elif score <= 60: return "color:purple; background-color:#ffc6ff; padding:10px; border-radius:15px;"
     elif score <= 80: return "color:orange; background-color:#ffd6a5; padding:10px; border-radius:15px;"
     elif score <= 99: return "color:red; background-color:#ffadad; padding:10px; border-radius:15px;"
-    else: return "color:white; background-c
+    else: return "color:white; background-color:#ff69b4; padding:10px; border-radius:15px; font-weight:bold;"
+
+# 궁합 보기 버튼
+if st.button("궁합 보기 ✨") and w1 and w2:
+    score_placeholder.empty()
+    result_placeholder.empty()
+    effect_placeholder.empty()
+
+    score = calc_score(w1, w2)
+    score_style = get_score_style(score)
+    score_placeholder.markdown(f'<div class="equals" style="{score_style}">= {score}%</div>', unsafe_allow_html=True)
+    result_placeholder.markdown(f'<div class="result_text">{generate_long_funny_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
+    show_explosion(score)
+
+# 단어 초기화
+if st.button("단어 초기화 🔄"):
+    st.session_state.word1 = ""
+    st.session_state.word2 = ""
+    score_placeholder.empty()
+    result_placeholder.empty()
+    effect_placeholder.empty()
+
+# 주의사항 표시
+st.markdown("""
+<hr style='border:2px dashed white;'/>
+
+<div style='text-align:center; color:white; font-size:20px; margin-top:20px;'>
+<b>⚠️ 주의사항:</b> 단순 재미용입니다. 과몰입 금지! 😆
+</div>
+""", unsafe_allow_html=True)
