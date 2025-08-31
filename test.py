@@ -45,19 +45,17 @@ result_placeholder = st.empty()
 score_placeholder = st.empty()
 effect_placeholder = st.empty()
 
-# 점수 계산 (획수 기반, 연속 점수 방지)
+# 점수 계산 (연속 점수 방지)
 last_score = None
 def calc_score(word1, word2):
     global last_score
     def count_strokes(word):
-        return sum([2 for _ in word])  # 단순화
+        return sum([2 for _ in word])
     diff = abs(count_strokes(word1) - count_strokes(word2))
     score = max(0, 100 - diff * 5)
-
     # 이전 점수와 너무 비슷하면 조정
     while last_score is not None and abs(score - last_score) <= 5:
         score = max(0, min(100, score + random.randint(-10,10)))
-
     last_score = score
     return score
 
@@ -136,7 +134,6 @@ if st.button("궁합 보기 ✨") and w1 and w2:
     score_placeholder.empty()
     result_placeholder.empty()
     effect_placeholder.empty()
-
     score = calc_score(w1, w2)
     score_style = get_score_style(score)
     score_placeholder.markdown(f'<div class="equals" style="{score_style}">= {score}%</div>', unsafe_allow_html=True)
@@ -153,4 +150,12 @@ if st.button("단어 초기화 🔄"):
 
 # 점수 공식 & 주의사항
 st.markdown("""
-<hr style='border
+<hr style='border:2px dashed white;'/>
+
+<div style='text-align:center; color:white; font-size:20px; margin-top:20px;'>
+<b>💡 점수 계산 공식:</b> <br>
+점수 = 100 - |(단어1 획수 - 단어2 획수) × 5| <br>
+※ 점수는 0~100 사이로 제한됩니다.<br><br>
+<b>⚠️ 주의사항:</b> 단순 재미용입니다. 과몰입 금지! 😆
+</div>
+""", unsafe_allow_html=True)
