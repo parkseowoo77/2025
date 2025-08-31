@@ -65,4 +65,36 @@ def show_explosion(score, count=50):
 
 # 긴 웃긴 이유 생성
 def generate_long_funny_reason(score, w1, w2):
-    te
+    templates_low = [
+        f"'{w1}'과 '{w2}'? 음… 둘 다 서로를 보고 눈치만 살피네요. 결국 둘 다 소파 구석으로 도망쳤어요. 😢\n근데 사실 '{w1}'은 간식이 더 궁금하고, '{w2}'는 햇빛이 더 좋아요.\n서로 한 발짝도 못 다가가네요. 정말 비극적이지만 웃겨요. 아마 둘 다 비 오는 날 우산 하나로 겨우 버티는 느낌?\n솔직히, 다음에는 핫초코라도 준비해야 할 듯!"
+    ]
+    templates_mid = [
+        f"'{w1}'과 '{w2}'… 서로 장난치면서 웃음이 끊이질 않아요. 😂\n'{w1}'이 작은 장난을 던지면 '{w2}'는 바로 대응! 눈치 싸움 승자는? 아무도 몰라요.\n간혹 서로 깜짝 놀라면서도, 결국 장난감 하나씩 나눠 가지는 사이.\n서로에 대한 이해는 살짝 부족하지만, 순간순간 귀여움 폭발!"
+    ]
+    templates_high = [
+        f"'{w1}' + '{w2}'… 하트 폭발! 💖\n눈 마주치면 심쿵! 매번 같이 있을 때마다 별이 튀어나오는 느낌 🌟\n둘 다 장난꾸러기지만 서로를 너무 잘 아는 느낌.\n이 조합은 정말 달콤한 폭죽처럼 폭발적이에요. 사랑이 팡팡 터지는 느낌!"
+    ]
+    templates_perfect = [
+        f"'{w1}' + '{w2}'… 완벽한 천생연분! 💍\n신랑👰과 신부🤵 등장! 온 세상이 폭죽과 꽃으로 뒤덮이는 마법 같은 순간 💖🌸💥\n둘이 손 잡는 순간, 하트와 별이 팡팡! 주변 사람들도 심쿵!\n이 조합은 단어계의 신데렐라와 프린스 찰떡궁합.\n서로의 장점을 100% 살려주는 완벽한 콤비!"
+    ]
+    if score <= 40: return random.choice(templates_low)
+    elif score <= 70: return random.choice(templates_mid)
+    elif score <= 99: return random.choice(templates_high)
+    else: return random.choice(templates_perfect)
+
+# 궁합 버튼
+if st.button("궁합 보기 ✨") and w1 and w2:
+    score = random.randint(0,100)
+    st.markdown(f'<div class="equals">=</div><span class="score_text"> {score}%</span>', unsafe_allow_html=True)
+    st.markdown(f'<div class="result_text">{generate_long_funny_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
+    show_explosion(score)
+
+    if score == 100:
+        st.markdown("""
+        <div style='text-align:center; margin-top:20px;'>
+            <img src='https://i.ibb.co/2Zr91gF/bride.png' width='180'>
+            <img src='https://i.ibb.co/7Yw2gFt/groom.png' width='180'>
+            <p style='font-size:60px;color:red;'>💖 신랑과 신부 등장! 💖</p>
+        </div>
+        """, unsafe_allow_html=True)
+        show_explosion(score)
