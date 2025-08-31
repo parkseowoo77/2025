@@ -4,15 +4,15 @@ import time
 
 st.set_page_config(page_title="💖단어 궁합 앱💖", layout="wide")
 
-# 스타일
+# 🌈 전체 스타일: 하늘 + 무지개 + 중앙 정렬 + 입력 상자
 st.markdown("""
 <style>
 body {
     margin:0; padding:0; height:100vh; display:flex; justify-content:center; align-items:center;
-    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+    background: linear-gradient(120deg, #89f7fe, #66a6ff, #fbc2eb, #a18cd1, #fdfbfb);
     background-size: 400% 400%;
-    animation: gradientBG 10s ease infinite;
-    color: white; font-family: 'Arial', sans-serif; overflow: hidden;
+    animation: gradientBG 20s ease infinite;
+    color: white; font-family: 'Arial', sans-serif; text-align: center; overflow: hidden;
 }
 @keyframes gradientBG {
     0% {background-position:0% 50%}
@@ -20,13 +20,15 @@ body {
     100% {background-position:0% 50%}
 }
 .container {text-align: center; z-index: 10;}
-h1 {font-size: 3em; margin-bottom: 20px; text-shadow: 2px 2px 8px rgba(0,0,0,0.3);}
+h1 {font-size: 3em; margin-bottom: 30px; text-shadow: 2px 2px 12px rgba(0,0,0,0.3);}
 .input-box {
-    background: rgba(255,255,255,0.2); padding: 50px; border-radius: 30px; width: 400px; margin: auto;
-    text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.15); padding: 50px; border-radius: 30px; width: 450px; margin: auto;
+    text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.3); backdrop-filter: blur(15px);
     border: 2px solid rgba(255,255,255,0.3);
 }
-input, button {font-size: 18px; padding: 12px; border-radius: 12px; border: none; outline: none; margin-top: 10px;}
+input, button {
+    font-size: 18px; padding: 12px; border-radius: 12px; border: none; outline: none; margin-top: 10px;
+}
 button {
     background-color: #ff6b81; color: white; cursor: pointer; font-weight: bold;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -36,7 +38,7 @@ button {
 </style>
 """, unsafe_allow_html=True)
 
-# 하늘에서 떨어지는 효과
+# 하늘에서 떨어지는 하트/별/반짝이
 symbols = ["❤️", "⭐", "💖", "✨", "💥", "🔥"]
 colors = ["red","pink","yellow","white","purple","lightblue"]
 floating_html = ""
@@ -75,7 +77,7 @@ def generate_funny_description(score, w1, w2):
     traits1 = get_word_traits(w1)
     traits2 = get_word_traits(w2)
     if score <= 20:
-        reason = f"{w1}({random.choice(traits1)})와 {w2}({random.choice(traits2)})… 서로 너무 달라서 길거리에서 코믹 폭발! 🥋😂"
+        reason = f"{w1}({random.choice(traits1)})와 {w2}({random.choice(traits2)})… 서로 너무 달라서 길거리 코미디 폭발! 🥋😂"
         description = f"{w1}가 {w2}에게 돌진, 지나가던 강아지: '뭐야 이거?' 🐶💨"
     elif score <= 40:
         reason = f"{w1}({random.choice(traits1)})가 {w2}({random.choice(traits2)})에게 장난치지만, {w2}는 쌉싸름 🤧💥"
@@ -108,11 +110,12 @@ if st.button("궁합 보기 ✨"):
             reason_placeholder.markdown(f"📌 이유: {reason}")
             desc_placeholder.markdown(f"💬 설명: {desc}")
 
-            if i <= 20: bg_color = "#2f2f2f"
-            elif i <= 40: bg_color = "#4a6fa5"
-            elif i <= 60: bg_color = "#ffe4b5"
-            elif i <= 80: bg_color = "#ffb6c1"
-            elif i <= 99: bg_color = "#ff69b4"
+            # 점수별 배경색 변화
+            if i <= 20: bg_color = "#a0c4ff"
+            elif i <= 40: bg_color = "#bdb2ff"
+            elif i <= 60: bg_color = "#ffc6ff"
+            elif i <= 80: bg_color = "#ffadad"
+            elif i <= 99: bg_color = "#ffd6a5"
             else: bg_color = "rainbow"
 
             if bg_color != "rainbow":
@@ -132,5 +135,4 @@ if st.button("궁합 보기 ✨"):
                 }
                 </style>
                 """, unsafe_allow_html=True)
-
-            time.sleep(0.02)  # 점수 실시간 증가
+            time.sleep(0.02)
