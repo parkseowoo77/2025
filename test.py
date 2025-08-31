@@ -28,14 +28,10 @@ input {font-size:50px; padding:60px; border-radius:30px; border:3px solid #fff; 
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------
-# 제목 (이모티콘 포함)
-# -----------------------------
+# 제목
 st.markdown('<div class="top_centered"><h1>🐱💖 단어 궁합 테스트 💖🐶</h1></div>', unsafe_allow_html=True)
 
-# -----------------------------
 # 입력창
-# -----------------------------
 col1, col2, col3 = st.columns([1,0.1,1])
 with col1:
     w1 = st.text_input("첫 번째 단어", key="word1", max_chars=15)
@@ -44,112 +40,19 @@ with col2:
 with col3:
     w2 = st.text_input("두 번째 단어", key="word2", max_chars=15)
 
-# -----------------------------
 # 결과 placeholder
-# -----------------------------
 result_placeholder = st.empty()
 score_placeholder = st.empty()
 effect_placeholder = st.empty()
 
-# -----------------------------
-# 점수 계산 (획수 기반)
-# -----------------------------
+# 점수 계산 (획수 기반, 연속 점수 방지)
 last_score = None
 def calc_score(word1, word2):
     global last_score
     def count_strokes(word):
-        return sum([2 for _ in word])  # 간단화
+        return sum([2 for _ in word])  # 단순화
     diff = abs(count_strokes(word1) - count_strokes(word2))
     score = max(0, 100 - diff * 5)
     if last_score == score:
         score = (score + random.randint(1,10)) % 101
-    last_score = score
-    return score
-
-# -----------------------------
-# 점수별 효과
-# -----------------------------
-def generate_effect_list(score):
-    if score <= 20: return ["☔","🌧️","💧"]
-    elif score <= 40: return ["💦","💧"]
-    elif score <= 60: return ["💖","✨"]
-    elif score <= 80: return ["🌈","💖","🎉"]
-    elif score <= 99: return ["💖","🎆","🎇","✨"]
-    else: return ["💍"]
-
-def show_explosion(score, count=50):
-    effects_html = ""
-    effects = generate_effect_list(score)
-    for _ in range(count):
-        e = random.choice(effects)
-        left = random.randint(0,90)
-        top = random.randint(10,90)
-        size = random.randint(50,120)
-        effects_html += f"""
-        <div class="effect_item" style="left:{left}%; top:{top}%; font-size:{size}px;">{e}</div>
-        """
-    effect_placeholder.markdown(effects_html, unsafe_allow_html=True)
-    time.sleep(5)
-    effect_placeholder.empty()
-
-# -----------------------------
-# 대화형 소설형 이유
-# -----------------------------
-def generate_long_funny_reason(score, w1, w2):
-    if score <= 40:
-        return f"'{w1}': '어… 왜 거기 있어?' 😢\n'{w2}': '나? 그냥 햇빛 좀 쬐려고…' \n둘은 서로 눈치만 보고 있어요. 결국 아무 일도 안 일어나고, 가끔 이상한 표정만 주고받아요. 귀엽게 엉뚱한 행동으로 웃음을 줍니다. 결국 이렇게 낮은 점수가 나왔네요!"
-    elif score <= 70:
-        return f"'{w1}': '이 장난감 내가 먼저 잡았다!' 😂\n'{w2}': '어, 나도 하나 가져갈래!' \n둘이 장난치며 놀다가 심쿵할 때도 있어요. 서로 웃음을 주고받으며 중간 점수가 나왔네요!"
-    elif score <= 99:
-        return f"'{w1}': '너 오늘 왜 이렇게 귀여워?' 💖\n'{w2}': '뭐? 너도 느끼고 있지?' \n둘은 서로 장난치고 행복을 느껴요. 주변 사람들도 자연스럽게 케미에 빠지고, 높은 점수가 나왔어요!"
-    else:
-        return f"'{w1}': '드디어 우리가 만났구나! 💍'\n'{w2}': '맞아! 이제 모든 폭죽은 우리를 위해 터지겠네!' \n둘은 서로를 바라보며 천생연분임을 확신. 반지 💍 폭죽이 터지고, 점수 100% 완벽한 궁합이에요!"
-
-# -----------------------------
-# 점수별 색상
-# -----------------------------
-def get_score_style(score):
-    if score <= 20: return "color:blue; background-color:#a0c4ff; padding:10px; border-radius:15px;"
-    elif score <= 40: return "color:darkblue; background-color:#bdb2ff; padding:10px; border-radius:15px;"
-    elif score <= 60: return "color:purple; background-color:#ffc6ff; padding:10px; border-radius:15px;"
-    elif score <= 80: return "color:orange; background-color:#ffd6a5; padding:10px; border-radius:15px;"
-    elif score <= 99: return "color:red; background-color:#ffadad; padding:10px; border-radius:15px;"
-    else: return "color:white; background-color:#ff69b4; padding:10px; border-radius:15px; font-weight:bold;"
-
-# -----------------------------
-# 궁합 보기 버튼
-# -----------------------------
-if st.button("궁합 보기 ✨") and w1 and w2:
-    score_placeholder.empty()
-    result_placeholder.empty()
-    effect_placeholder.empty()
-
-    score = calc_score(w1, w2)
-    score_style = get_score_style(score)
-    score_placeholder.markdown(f'<div class="equals" style="{score_style}">= {score}%</div>', unsafe_allow_html=True)
-    result_placeholder.markdown(f'<div class="result_text">{generate_long_funny_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
-    show_explosion(score)
-
-# -----------------------------
-# 단어 초기화
-# -----------------------------
-if st.button("단어 초기화 🔄"):
-    st.session_state.word1 = ""
-    st.session_state.word2 = ""
-    score_placeholder.empty()
-    result_placeholder.empty()
-    effect_placeholder.empty()
-
-# -----------------------------
-# 점수 공식 & 주의사항
-# -----------------------------
-st.markdown("""
-<hr style='border:2px dashed white;'/>
-
-<div style='text-align:center; color:white; font-size:20px; margin-top:20px;'>
-<b>💡 점수 계산 공식:</b> <br>
-점수 = 100 - |(단어1 획수 - 단어2 획수) × 5| <br>
-※ 점수는 0~100 사이로 제한됩니다.<br><br>
-<b>⚠️ 주의사항:</b> 단순 재미용입니다. 과몰입 금지! 😆
-</div>
-""", unsafe_allow_html=True)
+    last_sco_
