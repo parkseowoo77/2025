@@ -4,44 +4,44 @@ import time
 
 st.set_page_config(page_title="💖단어 궁합 앱💖", layout="wide")
 
-# 🌈 전체 스타일: 하늘 + 무지개 + 중앙 정렬 + 입력 상자
+# 전체 스타일
 st.markdown("""
 <style>
-body {
-    margin:0; padding:0; height:100vh; display:flex; justify-content:center; align-items:center;
+[data-testid="stAppViewContainer"]{
     background: linear-gradient(135deg, #87CEEB, #ff9a9e, #a18cd1, #fbc2eb, #89f7fe);
     background-size: 400% 400%;
     animation: rainbowSky 20s ease infinite;
-    color: white; font-family: 'Arial', sans-serif; text-align: center; overflow: hidden;
 }
 @keyframes rainbowSky {
     0% {background-position:0% 50%}
     50% {background-position:100% 50%}
     100% {background-position:0% 50%}
 }
-.container {
-    text-align: center; z-index: 10; width: 100%;
-    display: flex; justify-content: center; align-items: center; flex-direction: column;
+h1 {
+    text-align: center; color: white; font-size: 3em;
+    text-shadow: 2px 2px 12px rgba(0,0,0,0.5);
 }
-h1 {font-size: 3em; margin-bottom: 30px; text-shadow: 2px 2px 12px rgba(0,0,0,0.3);}
+.centered {
+    display: flex; justify-content: center; align-items: center; flex-direction: column;
+    height: 80vh;
+}
 .input-box {
-    background: rgba(255,255,255,0.15); padding: 50px; border-radius: 30px; width: 450px;
-    text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.3); backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.2); padding: 50px; border-radius: 30px; width: 400px;
+    text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(15px);
     border: 2px solid rgba(255,255,255,0.3);
 }
 input, button {
-    font-size: 18px; padding: 12px; border-radius: 12px; border: none; outline: none; margin-top: 10px;
+    font-size: 18px; padding: 12px; border-radius: 12px; border: none; margin-top: 10px;
 }
 button {
-    background-color: #ff6b81; color: white; cursor: pointer; font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    background-color: #ff6b81; color: white; font-weight: bold; cursor: pointer;
 }
 .floating {position: fixed; top: -50px; font-size: 24px; animation: floatDown 4s linear infinite; z-index: 0;}
 @keyframes floatDown {0% { transform: translateY(0) rotate(0deg); opacity: 1;} 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }}
 </style>
 """, unsafe_allow_html=True)
 
-# 하늘에서 떨어지는 하트/별/반짝이
+# 하트/별/폭죽 떨어지는 효과
 symbols = ["❤️", "⭐", "💖", "✨", "💥", "🔥"]
 colors = ["red","pink","yellow","white","purple","lightblue"]
 floating_html = ""
@@ -53,7 +53,7 @@ for i in range(0, 100, 5):
 st.markdown(floating_html, unsafe_allow_html=True)
 
 # 중앙 컨테이너
-st.markdown('<div class="container">', unsafe_allow_html=True)
+st.markdown('<div class="centered">', unsafe_allow_html=True)
 st.markdown("<h1>💖 단어 궁합 테스트 💖</h1>", unsafe_allow_html=True)
 st.markdown('<div class="input-box">', unsafe_allow_html=True)
 
@@ -63,7 +63,7 @@ word2 = st.text_input("두 번째 단어를 입력하세요:")
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 단어 속성 매핑
+# 단어 특성
 def get_word_traits(word):
     traits = {
         "초코": ["달콤", "쫀득", "장난꾸러기"],
@@ -75,7 +75,7 @@ def get_word_traits(word):
     }
     return traits.get(word, ["평범", "신비", "알수없음"])
 
-# 즉석 코믹 설명 생성
+# 웃긴 설명 생성
 def generate_funny_description(score, w1, w2):
     traits1 = get_word_traits(w1)
     traits2 = get_word_traits(w2)
