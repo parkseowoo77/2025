@@ -9,20 +9,23 @@ st.markdown("""
 <style>
 body {
     margin:0; padding:0; height:100vh; display:flex; justify-content:center; align-items:center;
-    background: linear-gradient(120deg, #89f7fe, #66a6ff, #fbc2eb, #a18cd1, #fdfbfb);
+    background: linear-gradient(135deg, #87CEEB, #ff9a9e, #a18cd1, #fbc2eb, #89f7fe);
     background-size: 400% 400%;
-    animation: gradientBG 20s ease infinite;
+    animation: rainbowSky 20s ease infinite;
     color: white; font-family: 'Arial', sans-serif; text-align: center; overflow: hidden;
 }
-@keyframes gradientBG {
+@keyframes rainbowSky {
     0% {background-position:0% 50%}
     50% {background-position:100% 50%}
     100% {background-position:0% 50%}
 }
-.container {text-align: center; z-index: 10;}
+.container {
+    text-align: center; z-index: 10; width: 100%;
+    display: flex; justify-content: center; align-items: center; flex-direction: column;
+}
 h1 {font-size: 3em; margin-bottom: 30px; text-shadow: 2px 2px 12px rgba(0,0,0,0.3);}
 .input-box {
-    background: rgba(255,255,255,0.15); padding: 50px; border-radius: 30px; width: 450px; margin: auto;
+    background: rgba(255,255,255,0.15); padding: 50px; border-radius: 30px; width: 450px;
     text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.3); backdrop-filter: blur(15px);
     border: 2px solid rgba(255,255,255,0.3);
 }
