@@ -49,14 +49,10 @@ effect_placeholder = st.empty()
 last_score = None
 def calc_score(word1, word2):
     global last_score
-    def count_strokes(word):
-        return sum([2 for _ in word])
-    diff = abs(count_strokes(word1) - count_strokes(word2))
-    score = max(0, 100 - diff * 5)
+    score = random.randint(0, 100)
     # 같은 점수 연속 방지
-    if last_score == score:
-        while score == last_score:
-            score = random.randint(0, 100)
+    while last_score is not None and score == last_score:
+        score = random.randint(0, 100)
     last_score = score
     return score
 
@@ -87,31 +83,13 @@ def show_explosion(score, count=50):
 # 웃긴 대화형 소설 이유
 def generate_long_funny_reason(score, w1, w2):
     if score <= 40:
-        return f"""
-'{w1}': '어… 왜 거기 있어?' 😢
-'{w2}': '나? 그냥 햇빛 좀 쬐려고…'
-둘은 서로 눈치만 보고 있어요. 서로를 발견하고 깜짝 놀랐지만, 곧 '아무 일도 없었던 척' 하며 서성입니다.
-가끔 서로 장난을 치려다 실패해서 어색하게 웃음을 짓고,
-심지어 지나가는 사람들도 '저거 뭐야?' 하며 쳐다보죠.
-"""
+        return f"'{w1}'와 '{w2}'는 서로 눈치만 보고 있어요. 어색하지만 귀엽고 엉뚱한 상황이 이어집니다."
     elif score <= 70:
-        return f"""
-'{w1}': '이 장난감 내가 먼저 잡았다!' 😂
-'{w2}': '어, 나도 하나 가져갈래!'
-둘은 장난치며 놀다가 중간중간 서로를 놀리기도 하고, 웃음이 터지기도 합니다.
-"""
+        return f"'{w1}'와 '{w2}'는 장난을 치며 놀다가 웃음을 주고받아요. 중간 정도 점수가 나왔네요!"
     elif score <= 99:
-        return f"""
-'{w1}': '너 오늘 왜 이렇게 귀여워?' 💖
-'{w2}': '뭐? 너도 느끼고 있지?'
-둘은 서로의 작은 행동 하나하나에 행복을 느끼며 장난을 치고 웃음을 주고받아요.
-"""
+        return f"'{w1}'와 '{w2}'는 서로의 귀여움과 장난에 행복을 느끼며, 주변도 케미에 빠집니다."
     else:
-        return f"""
-'{w1}': '드디어 우리가 만났구나! 💍'
-'{w2}': '맞아! 이제 모든 폭죽은 우리를 위해 터지겠네!'
-둘은 서로를 바라보며 천생연분임을 확신하고, 반지 💍 폭죽이 터집니다.
-"""
+        return f"'{w1}'와 '{w2}'는 완벽한 궁합! 서로를 바라보며 축제 같은 폭죽이 터집니다."
 
 # 점수별 색상
 def get_score_style(score):
@@ -120,23 +98,4 @@ def get_score_style(score):
     elif score <= 60: return "color:purple; background-color:#ffc6ff; padding:10px; border-radius:15px;"
     elif score <= 80: return "color:orange; background-color:#ffd6a5; padding:10px; border-radius:15px;"
     elif score <= 99: return "color:red; background-color:#ffadad; padding:10px; border-radius:15px;"
-    else: return "color:white; background-color:#ff69b4; padding:10px; border-radius:15px; font-weight:bold;"
-
-# 궁합 보기 버튼
-if st.button("궁합 보기 ✨") and w1 and w2:
-    score_placeholder.empty()
-    result_placeholder.empty()
-    effect_placeholder.empty()
-    score = calc_score(w1, w2)
-    score_style = get_score_style(score)
-    score_placeholder.markdown(f'<div class="equals" style="{score_style}">= {score}%</div>', unsafe_allow_html=True)
-    result_placeholder.markdown(f'<div class="result_text">{generate_long_funny_reason(score, w1, w2)}</div>', unsafe_allow_html=True)
-    show_explosion(score)
-
-# 단어 초기화
-if st.button("단어 초기화 🔄"):
-    st.session_state.word1 = ""
-    st.session_state.word2 = ""
-    score_placeholder.empty()
-    result_placeholder.empty()
-    effect_placeholder.empty()
+    else: return "color:white; background-c
