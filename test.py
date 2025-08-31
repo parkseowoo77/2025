@@ -14,9 +14,9 @@ st.markdown("""
     height:100vh;
 }
 @keyframes rainbowSky {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.centered {display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; text-align:center;}
+.top_centered {display:flex; flex-direction:column; justify-content:flex-start; align-items:center; text-align:center; padding-top:30px;}
 h1 {color:white; font-size:6em; text-shadow:3px 3px 15px rgba(0,0,0,0.5); margin-bottom:40px; text-align:center;}
-input {font-size:60px; padding:60px; border-radius:30px; border:3px solid #fff; text-align:center; width:300px; height:200px;}
+input {font-size:60px; padding:60px; border-radius:30px; border:3px solid #fff; text-align:center; width:300px; height:200px; margin-bottom:20px;}
 .plus {font-size:50px; color:white; margin:0 20px; font-weight:bold; display:flex; align-items:center; justify-content:center;}
 .equals {font-size:60px; color:white; font-weight:bold; margin:20px 10px; display:inline;}
 .score_text {font-size:60px; color:white; font-weight:bold; display:inline;}
@@ -31,7 +31,8 @@ input {font-size:60px; padding:60px; border-radius:30px; border:3px solid #fff; 
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="centered">', unsafe_allow_html=True)
+# 화면 맨 위에 제목과 입력 상자
+st.markdown('<div class="top_centered">', unsafe_allow_html=True)
 st.markdown("<h1>💖 단어 궁합 테스트 💖</h1>", unsafe_allow_html=True)
 
 # 입력 상자 + 기호
@@ -42,8 +43,7 @@ with col2:
     st.markdown('<div class="plus">+</div>', unsafe_allow_html=True)
 with col3:
     w2 = st.text_input("", key="word2", max_chars=15)
-
-st.markdown('<div style="margin-top:20px;"></div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # 점수별 이유
 def generate_reason(score, w1, w2):
@@ -106,6 +106,6 @@ if st.button("궁합 보기 ✨") and w1 and w2:
             <p style='font-size:60px;color:red;'>💖 신랑과 신부 등장! 💖</p>
         </div>
         """, unsafe_allow_html=True)
-        for _ in range(5):  # 레이어 5번 겹치기
+        for _ in range(5):
             show_effect(score, count=50)
             time.sleep(0.1)
